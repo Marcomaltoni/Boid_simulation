@@ -7,34 +7,34 @@
 
 int main() {
   std::cout << "Insert the following parameters: \n"
-            << " 1- Parameter which determines when two boids are 'near': \n";
-  float d;
-  std::cin >> d;
+            << " 1- Parameter which determines when two boids are 'near', values permitted are between [50; 200]: \n";
+  float closeness_parameter;
+  std::cin >> closeness_parameter;
 
   std::cout
       << " 2- Parameter which represents the distance at which starts to act "
-         "the separation rule among boids: \n";
-  float ds;
-  std::cin >> ds;
+         "the separation rule among boids, values permitted are between [25; 40]: \n";
+  float distance_of_separation;
+  std::cin >> distance_of_separation;
 
   std::cout << " 3- Parameter which determines the intensity of the separation "
-               "among boids: \n";
-  float s;
-  std::cin >> s;
+               "among boids, values permitted are between [0.005; 0.8]: \n";
+  float separation_parameter;
+  std::cin >> separation_parameter;
 
   std::cout << " 4- Parameter which determines the intensity of the allignment "
-               "among boids: \n";
-  float a;
-  std::cin >> a;
+               "among boids, values permitted are between [0.2; 0.8]: \n";
+  float allignment_parameter;
+  std::cin >> allignment_parameter;
 
   std::cout
       << " 5- Parameter which determines the intensity of the cohesion among "
-         "boids: "
+         "boids, values permitted are between [0.0001; 0.001]: "
          "(after you'll have inserted it, you'll be able to start the "
          "simulation: press the left button of your mouse/touchpad to make a "
          "boid appear, press the right one to make a predator appear.)\n";
-  float c;
-  std::cin >> c;
+  float cohesion_parameter;
+  std::cin >> cohesion_parameter;
 
   sf::RenderWindow window(
       sf::VideoMode(0.9 * sf::VideoMode::getDesktopMode().width,
@@ -49,7 +49,7 @@ int main() {
   sf::Texture texture;
 
   if (!texture.loadFromFile("cielo.jpg")) {
-    std::cout << "Error loading the background\n";
+    std::cout << "Error loading the background image\n";
   }
 
   sf::Sprite sprite;
@@ -69,7 +69,7 @@ int main() {
   std::default_random_engine eng;
   std::normal_distribution<float> dist;
 
-  pr::Flock flock{d, ds, s, a, c};
+  pr::Flock flock{closeness_parameter, distance_of_separation, separation_parameter, allignment_parameter, cohesion_parameter};
 
   while (window.isOpen()) {
     while (window.pollEvent(event)) {

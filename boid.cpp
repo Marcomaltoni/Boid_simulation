@@ -2,6 +2,7 @@
 #include "boid.hpp"
 
 #include <cmath>
+#include <cassert>
 
 namespace pr {
 Boid::Boid() : position_{Vector2{}}, velocity_{Vector2{}}, velocity_max_{0.f} {}
@@ -124,7 +125,7 @@ float Boid::get_angle() const {
 }
 
 void Boid::limit_velocity() {
-  if (velocity_.lenght_of_vector() > velocity_max_) {
+  if (velocity_.lenght_of_vector() == velocity_max_) {
     velocity_ = velocity_ * 0.5;
   }
 }

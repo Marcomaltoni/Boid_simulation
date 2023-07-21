@@ -15,9 +15,11 @@ Flock::Flock(const float distance, const float ds_parameter,
       separation_parameter_{s_parameter},
       allignment_parameter_{a_parameter},
       cohesion_parameter_{c_parameter} {
-  assert(closeness_parameter_ > 0.f && distance_of_separation_ > 0.f &&
-         separation_parameter_ > 0.f && allignment_parameter_ > 0.f &&
-         cohesion_parameter_ > 0.f);
+  assert(closeness_parameter_ >= 50.f && closeness_parameter_ <= 200.f &&
+         distance_of_separation_ >= 25.f && distance_of_separation_ <= 40.f &&
+         separation_parameter_ >= 0.005f && separation_parameter_ <= 0.08f &&
+         allignment_parameter_ >= 0.2f && allignment_parameter_ <= 0.8f &&
+         cohesion_parameter_ >= 0.0001f && cohesion_parameter_ <= 0.001f);
 };
 
 std::vector<Boid> Flock::all_boids() const { return boids_; };
