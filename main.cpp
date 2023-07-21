@@ -1,10 +1,9 @@
-#include "flock.hpp"
 #include <iomanip>
 #include <iostream>
 #include <random>
 
 #include "SFML/Graphics.hpp"
-
+#include "flock.hpp"
 
 int main() {
   std::cout << "Insert the following parameters: \n"
@@ -12,8 +11,9 @@ int main() {
   float d;
   std::cin >> d;
 
-  std::cout << " 2- Parameter which represents the distance at which starts "
-               "the separation among boids: \n";
+  std::cout
+      << " 2- Parameter which represents the distance at which starts to act "
+         "the separation rule among boids: \n";
   float ds;
   std::cin >> ds;
 
@@ -27,10 +27,12 @@ int main() {
   float a;
   std::cin >> a;
 
-  std::cout << " 5- Parameter which determines the cohesion among boids: "
-               "(after you'll have inserted it, you'll be able to start the "
-               "simulation: press the left button of your mouse/pad to make a "
-               "boid appear, press the right one to make a predator appear.)\n";
+  std::cout
+      << " 5- Parameter which determines the intensity of the cohesion among "
+         "boids: "
+         "(after you'll have inserted it, you'll be able to start the "
+         "simulation: press the left button of your mouse/touchpad to make a "
+         "boid appear, press the right one to make a predator appear.)\n";
   float c;
   std::cin >> c;
 
@@ -54,14 +56,14 @@ int main() {
 
   sprite.setTexture(texture);
 
-  const float scaleX =
+  const float background_scaleX =
       static_cast<float>(window.getSize().x) /
       texture.getSize()
           .x;  // scale factor to adapt the background image to the window.
-  const float scaleY =
+  const float background_scaleY =
       static_cast<float>(window.getSize().y) / texture.getSize().y;
 
-  sprite.setScale(scaleX, scaleY);
+  sprite.setScale(background_scaleX, background_scaleY);
   sprite.setPosition(0.f, 0.f);
 
   std::default_random_engine eng;
@@ -142,22 +144,24 @@ int main() {
     flock.update(time_per_frame, 0.9 * sf::VideoMode::getDesktopMode().width,
                  0.9 * sf::VideoMode::getDesktopMode().height);
 
-    pr::Result res = flock.state();
+    pr::Result flock_state = flock.state();
 
-if(flock.n_birds().size() >= 2 && time_passed.asSeconds() >= 1.f){ 
-    std::cout << "Medium velocity: " << res.medium_velocity << " +/- "
-              << res.err_velocity << ";       "
-              << "Medium distance among boids: " << res.medium_distance
-              << " +/- " << res.err_distance << ";\n";
-              
-              clock2.restart();}
+    if (flock.all_boids().size() >= 2 && time_passed.asSeconds() >= 1.f) {
+      std::cout << "Medium velocity: " << flock_state.medium_velocity << " +/- "
+                << flock_state.err_velocity << ";       "
+                << "Medium distance among boids: "
+                << flock_state.medium_distance << " +/- "
+                << flock_state.err_distance << ";\n";
+
+      clock2.restart();
+    }
 
     window.clear();
 
     window.draw(sprite);
 
-    for (pr::Boid& x : flock.n_birds()) {
-      window.draw(x.shape());
+    for (pr::Boid& boid : flock.all_boids()) {
+      window.draw(boid.set_shape());
     }
 
     window.display();

@@ -7,233 +7,262 @@
 #include <numeric>
 
 namespace pr {
-Flock::Flock(const float distanceance, const float ds_parameter,
+Flock::Flock(const float distance, const float ds_parameter,
              const float s_parameter, const float a_parameter,
              const float c_parameter)
-    : d_{distanceance},
-      ds_{ds_parameter},
-      s_{s_parameter},
-      a_{a_parameter},
-      c_{c_parameter} {
-  assert(d_ > 0 && ds_ > 0 && s_ > 0 && a_ > 0 && c_ > 0);
+    : closeness_parameter_{distance},
+      distance_of_separation_{ds_parameter},
+      separation_parameter_{s_parameter},
+      allignment_parameter_{a_parameter},
+      cohesion_parameter_{c_parameter} {
+  assert(closeness_parameter_ > 0.f && distance_of_separation_ > 0.f &&
+         separation_parameter_ > 0.f && allignment_parameter_ > 0.f &&
+         cohesion_parameter_ > 0.f);
 };
 
-std::vector<Boid> Flock::n_birds() const { return birds_; };
+std::vector<Boid> Flock::all_boids() const { return boids_; };
 
-int Flock::size() const { return birds_.size(); }
+int Flock::size() const { return boids_.size(); }
 
-Boid Flock::single_bird(int n) const { return birds_[n]; }
-
-void Flock::push_back(const Boid& b1) { birds_.push_back(b1); }
-
-float Flock::n_near(const Boid& i) const {
-  return count_if(birds_.begin(), birds_.end(), [this, &i](const Boid& x) {
-    float distanceance = std::abs(i.position().distance(x.position()));
-
-    return distanceance < this->d_ && distanceance != 0;
-  });
+Boid Flock::single_boid(int number_of_boid) const {
+  return boids_[number_of_boid];
 }
 
-Vector2 Flock::find_centermass(const Boid& i) const {
-  std::vector<Vector2> near;
-  
-  for (const Boid& x : birds_) {
-    if (std::abs(i.position().distance(x.position())) < d_ &&
-        std::abs(i.position().distance(x.position())) != 0 &&
-        x.c_shape().getFillColor() != sf::Color::Black) {
-      near.push_back(x.position());
+void Flock::push_back(const Boid& new_boid) { boids_.push_back(new_boid); }
+
+float Flock::close_boids(const Boid& chosen_boid) const {
+  return count_if(
+      boids_.begin(), boids_.end(),
+      [this, &chosen_boid](const Boid& other_boid) {
+        float distanceance =
+            std::abs(chosen_boid.position().distance(other_boid.position()));
+
+        return distanceance < this->closeness_parameter_ && distanceance != 0;
+      });
+}
+
+Vector2 Flock::find_centermass(const Boid& chosen_boid) const {
+  std::vector<Vector2> near_boids;
+
+  for (const Boid& other_boid : boids_) {
+    if (std::abs(chosen_boid.position().distance(other_boid.position())) <
+            closeness_parameter_ &&
+        std::abs(chosen_boid.position().distance(other_boid.position())) != 0 &&
+        other_boid.get_shape().getFillColor() != sf::Color::Black) {
+      near_boids.push_back(other_boid.position());
     }
-    assert(near.size() <= birds_.size());
+    assert(near_boids.size() <= boids_.size());
   }
 
-  if (near.size() > 0) {
+  if (!near_boids.empty()) {
     Vector2 mass_center =
-        std::accumulate(near.begin(), near.end(), Vector2{0.f, 0.f},
+        std::accumulate(near_boids.begin(), near_boids.end(), Vector2{0.f, 0.f},
                         [](const Vector2& a, const Vector2& b) {
                           float x = a.x_axis() + b.x_axis();
                           float y = a.y_axis() + b.y_axis();
 
                           return Vector2{x, y};
                         }) *
-        (1 / n_near(i));
+        (1 / close_boids(chosen_boid));
 
     return mass_center;
 
   } else {
-    return (i.position());
+    return (chosen_boid.position());
   }
 }
 
-Vector2 Flock::find_separation(const Boid& i) const {
+Vector2 Flock::find_separation(const Boid& chosen_boid) const {
   Vector2 null{};
 
-  for (Boid b : birds_) {
-    null += i.separation(b, s_, ds_);
+  for (Boid other_boid : boids_) {
+    null += chosen_boid.separation(other_boid, separation_parameter_,
+                                   distance_of_separation_);
   }
 
   return null;
 }
-Vector2 Flock::find_allignment(const Boid& i) const {
+
+Vector2 Flock::find_allignment(const Boid& chosen_boid) const {
   Vector2 null{};
 
-  for (Boid b : birds_) {
-    null += i.allignment(b, a_, n_near(i), d_);
+  for (Boid other_boid : boids_) {
+    null +=
+        chosen_boid.allignment(other_boid, allignment_parameter_,
+                               close_boids(chosen_boid), closeness_parameter_);
   }
 
   return null;
 }
-Vector2 Flock::find_cohesion(const Boid& i) const {
-  Vector2 vec = find_separation(i) + find_allignment(i) +
-                i.cohesion(find_centermass(i), c_);
 
-  return vec;
+Vector2 Flock::find_cohesion(const Boid& chosen_boid) const {
+  Vector2 velocity_offset =
+      find_separation(chosen_boid) + find_allignment(chosen_boid) +
+      chosen_boid.cohesion(find_centermass(chosen_boid), cohesion_parameter_);
+
+  return velocity_offset;
 }
 
-bool Flock::is_predator(const Boid& x) const {
-  if (x.c_shape().getFillColor() == sf::Color::Red) {
-    return std::any_of(birds_.begin(), birds_.end(), [this, &x](const Boid& y) {
-      float distanceance = std::abs(x.position().distance(y.position()));
+bool Flock::is_predator(const Boid& chosen_boid) const {
+  if (chosen_boid.get_shape().getFillColor() == sf::Color::Red) {
+    return std::any_of(
+        boids_.begin(), boids_.end(),
+        [this, &chosen_boid](const Boid& other_boid) {
+          float distance =
+              std::abs(chosen_boid.position().distance(other_boid.position()));
 
-      return y.c_shape().getFillColor() == sf::Color::Black &&
-             distanceance < this->d_ && distanceance != 0;
-    });
+          return other_boid.get_shape().getFillColor() == sf::Color::Black &&
+                 distance < this->closeness_parameter_ && distance != 0;
+        });
 
   } else {
     return false;
   }
 }
 
-void Flock::in_limits(Boid& b, unsigned int i, unsigned int j) {
-  float max_x = static_cast<float>(i);
-  float max_y = static_cast<float>(j);
+void Flock::in_limits(Boid& chosen_boid, unsigned int window_height,
+                      unsigned int window_width) {
+  float max_height = static_cast<float>(window_height);
+  float max_width = static_cast<float>(window_width);
 
-  if (is_predator(b) == false) {
-    for (Boid& x : birds_) {
-      if (x.position().distance(b.position()) < d_) {
-        if (b.shape().getPosition().x >= max_x) {
-          x.change_velocity(
-              Vector2{-std::abs(2.f * x.velocity().x_axis()), 0.f});
+  if (is_predator(chosen_boid) == false) {
+    for (Boid& other_boid : boids_) {
+      if (other_boid.position().distance(chosen_boid.position()) <
+          closeness_parameter_) {
+        if (chosen_boid.set_shape().getPosition().x >= max_height) {
+          other_boid.change_velocity(
+              Vector2{-std::abs(2.f * other_boid.velocity().x_axis()), 0.f});
         }
 
-        if (b.shape().getPosition().x <= 0.f) {
-          x.change_velocity(
-              Vector2{std::abs(2.0f * x.velocity().x_axis()), 0.f});
+        if (chosen_boid.set_shape().getPosition().x <= 0.f) {
+          other_boid.change_velocity(
+              Vector2{std::abs(2.0f * other_boid.velocity().x_axis()), 0.f});
         }
 
-        if (b.shape().getPosition().y >= max_y) {
-          x.change_velocity(
-              Vector2{0.f, -std::abs(2.f * x.velocity().y_axis())});
+        if (chosen_boid.set_shape().getPosition().y >= max_width) {
+          other_boid.change_velocity(
+              Vector2{0.f, -std::abs(2.f * other_boid.velocity().y_axis())});
         }
 
-        if (b.shape().getPosition().y <= 0.f) {
-          x.change_velocity(
-              Vector2{0.f, std::abs(2.0f * x.velocity().y_axis())});
+        if (chosen_boid.set_shape().getPosition().y <= 0.f) {
+          other_boid.change_velocity(
+              Vector2{0.f, std::abs(2.0f * other_boid.velocity().y_axis())});
         }
       }
     }
 
   } else {
-    if (b.shape().getPosition().x > max_x) {
-      b.change_position(Vector2{-max_x, 0.f});
-      b.shape().setPosition(sf::Vector2f(0.f, b.position().y_axis()));
+    if (chosen_boid.set_shape().getPosition().x > max_height) {
+      chosen_boid.change_position(Vector2{-max_height, 0.f});
+      chosen_boid.set_shape().setPosition(
+          sf::Vector2f(0.f, chosen_boid.position().y_axis()));
     }
 
-    if (b.shape().getPosition().x < 0.f) {
-      b.change_position(Vector2{max_x, 0.f});
-      b.shape().setPosition(sf::Vector2f(max_x, b.position().y_axis()));
+    if (chosen_boid.set_shape().getPosition().x < 0.f) {
+      chosen_boid.change_position(Vector2{max_height, 0.f});
+      chosen_boid.set_shape().setPosition(
+          sf::Vector2f(max_height, chosen_boid.position().y_axis()));
     }
 
-    if (b.shape().getPosition().y > max_y) {
-      b.change_position(Vector2{0.f, -max_y});
-      b.shape().setPosition(sf::Vector2f(b.position().x_axis(), 0.f));
+    if (chosen_boid.set_shape().getPosition().y > max_width) {
+      chosen_boid.change_position(Vector2{0.f, -max_width});
+      chosen_boid.set_shape().setPosition(
+          sf::Vector2f(chosen_boid.position().x_axis(), 0.f));
     }
 
-    if (b.shape().getPosition().y < 0.f) {
-      b.change_position(Vector2{0.f, max_y});
-      b.shape().setPosition(sf::Vector2f(b.position().x_axis(), max_y));
+    if (chosen_boid.set_shape().getPosition().y < 0.f) {
+      chosen_boid.change_position(Vector2{0.f, max_width});
+      chosen_boid.set_shape().setPosition(
+          sf::Vector2f(chosen_boid.position().x_axis(), max_width));
     }
   }
 }
 
-Vector2 Flock::evolve(Boid& i, float dt) {
-  if (n_near(i) != 0) {
-    i.change_velocity(find_cohesion(i));
+Vector2 Flock::evolve(Boid& chosen_boid, float delta_time) {
+  if (close_boids(chosen_boid) != 0.f) {
+    chosen_boid.change_velocity(find_cohesion(chosen_boid));
 
-    Vector2 offset = i.velocity() * dt;
-    i.change_position(offset);
+    Vector2 position_offset = chosen_boid.velocity() * delta_time;
+    chosen_boid.change_position(position_offset);
 
-    i.setRotation();
+    chosen_boid.setRotation();
 
-    return offset;
+    return position_offset;
 
   } else {
-    Vector2 offset = i.velocity() * dt;
-    i.change_position(offset);
+    Vector2 position_offset = chosen_boid.velocity() * delta_time;
+    chosen_boid.change_position(position_offset);
 
-    return offset;
+    return position_offset;
   }
 }
 
 Result Flock::state() const {
-  if (birds_.size() > 2) {
-    std::vector<float> v;
-    std::vector<float> p;
+  if (boids_.size() > 2) {
+    std::vector<float> velocities;
+    std::vector<float> distances;
 
-    for (const Boid& x : n_birds()) {
-      v.push_back(x.velocity().mod());
+    for (const Boid& boid : all_boids()) {
+      velocities.push_back(boid.velocity().lenght_of_vector());
 
-      auto it = std::find(birds_.begin(), birds_.end(), x);
-      size_t number_of_boid = std::distance(birds_.begin(), it);
-      for (size_t i{number_of_boid + 1}; i < birds_.size(); ++i) {
-        float distanceance = x.position().distance(single_bird(i).position());
-        p.push_back(distanceance);
+      auto boid_position = std::find(boids_.begin(), boids_.end(), boid);
+      size_t number_of_boid = std::distance(boids_.begin(), boid_position);
+      for (size_t i{number_of_boid + 1}; i < boids_.size(); ++i) {
+        float distance = boid.position().distance(single_boid(i).position());
+        distances.push_back(distance);
       }
     }
 
-    float vsize_f = static_cast<float>(v.size());
-    float psize_f = static_cast<float>(p.size());
+    float vsize_f = static_cast<float>(velocities.size());
+    float psize_f = static_cast<float>(distances.size());
 
     float medium_velocity =
-        (std::accumulate(v.begin(), v.end(), 0.f)) / vsize_f;
+        (std::accumulate(velocities.begin(), velocities.end(), 0.f)) / vsize_f;
 
     float quadratic_differencev = std::accumulate(
-        v.begin(), v.end(), 0.f, [&medium_velocity](float n, float t) {
-          return n + std::pow((medium_velocity - t), 2.f);
+        velocities.begin(), velocities.end(), 0.f,
+        [&medium_velocity](float initial_value, float single_velocity) {
+          return initial_value +
+                 std::pow((medium_velocity - single_velocity), 2.f);
         });
 
     float err_velocity =
         std::sqrt((1.f / ((vsize_f - 1.f) * vsize_f)) * quadratic_differencev);
 
-    float medium_distanceance =
-        (std::accumulate(p.begin(), p.end(), 0.f)) / psize_f;
+    float medium_distance =
+        (std::accumulate(distances.begin(), distances.end(), 0.f)) / psize_f;
 
     float quadratic_differencep = std::accumulate(
-        p.begin(), p.end(), 0.f, [&medium_distanceance](float m, float s) {
-          return m + std::pow((medium_distanceance - s), 2.f);
+        distances.begin(), distances.end(), 0.f,
+        [&medium_distance](float initial_value, float single_distance) {
+          return initial_value +
+                 std::pow((medium_distance - single_distance), 2.f);
         });
 
-    float err_distanceance =
+    float err_distance =
         std::sqrt((1.f / ((psize_f - 1.f) * psize_f)) * quadratic_differencep);
 
-    return {medium_velocity, err_velocity, medium_distanceance, err_distanceance};
+    return {medium_velocity, err_velocity, medium_distance, err_distance};
   } else {
     return {0., 0., 0., 0.};
   }
 }
 
-void Flock::update(sf::Time const& time, unsigned int i, unsigned int j) {
-  for (Boid& x : birds_) {
-    x.limit_velocity();
-    x.setRotation();
+void Flock::update(sf::Time const& time, unsigned int window_height,
+                   unsigned int window_width) {
+  for (Boid& boid : boids_) {
+    boid.limit_velocity();
+    boid.setRotation();
 
-    float tim = time.asSeconds() * 210;
+    float delta_time = time.asSeconds() * 210;
 
-    Vector2 offset = evolve(x, tim);
+    Vector2 position_offset = evolve(boid, delta_time);
 
-    in_limits(x, i, j);
+    in_limits(boid, window_height, window_width);
 
-    sf::Vector2f vec{offset.x_axis(), offset.y_axis()};
-    x.shape().move(vec);
+    sf::Vector2f graphic_offset{position_offset.x_axis(),
+                                position_offset.y_axis()};
+    boid.set_shape().move(graphic_offset);
   }
 }
 }  // namespace pr

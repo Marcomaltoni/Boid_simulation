@@ -16,21 +16,21 @@ class Vector2 {
 
   float y_axis() const;
 
-  Vector2 operator+=(const Vector2 &vec);
+  Vector2 operator+=(const Vector2 &other_vector);
 
-  Vector2 operator+(const Vector2 &vec) const;
+  Vector2 operator+(const Vector2 &other_vector) const;
 
-  Vector2 operator-(const Vector2 &vec) const;
+  Vector2 operator-(const Vector2 &other_vector) const;
 
-  float dist(const Vector2 &vec) const;
+  float distance(const Vector2 &other_vector) const;
 
-  float mod() const;
+  float lenght_of_vector() const;
 
-  bool operator!=(const Vector2 &vec) const;
+  bool operator!=(const Vector2 &other_vector) const;
 
-  bool operator==(const Vector2 &vec) const;
+  bool operator==(const Vector2 &other_vector) const;
 
-  Vector2 operator*(float s) const;
+  Vector2 operator*(float scalar) const;
 };
 }  // namespace pr
 

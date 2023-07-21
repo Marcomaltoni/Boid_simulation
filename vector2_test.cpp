@@ -66,7 +66,7 @@ TEST_CASE("Testing distance method") {
   const pr::Vector2 v1{2., 3.};
   const pr::Vector2 v2{3., 4.};
 
-  double distance = v1.dist(v2);
+  double distance = v1.distance(v2);
 
   CHECK(distance == doctest::Approx(1.414).epsilon(0.001));
 }
@@ -74,9 +74,9 @@ TEST_CASE("Testing distance method") {
 TEST_CASE("Testing module method") {
   const pr::Vector2 v1{3., 4.};
 
-  double module = v1.mod();
+  double lenght = v1.lenght_of_vector();
 
-  CHECK(module == doctest::Approx(5.0).epsilon(0.1));
+  CHECK(lenght == doctest::Approx(5.0).epsilon(0.1));
 }
 
 TEST_CASE("Testing operator!=") {

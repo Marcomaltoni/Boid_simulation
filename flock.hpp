@@ -15,49 +15,51 @@ struct Result {
 };
 
 class Flock {
-  const float d_;
+  const float closeness_parameter_;
 
-  const float ds_;
+  const float distance_of_separation_;
 
-  const float s_;
+  const float separation_parameter_;
 
-  const float a_;
+  const float allignment_parameter_;
 
-  const float c_;
+  const float cohesion_parameter_;
 
-  std::vector<Boid> birds_;
+  std::vector<Boid> boids_;
 
  public:
   Flock(const float distance, const float ds_parameter, const float s_parameter,
         const float a_parameter, const float c_parameter);
 
-  std::vector<Boid> n_birds() const;
+  std::vector<Boid> all_boids() const;
 
   int size() const;
 
-  Boid single_bird(int n) const;
+  Boid single_boid(int number_of_boid) const;
 
-  void push_back(const Boid& b1);
+  void push_back(const Boid& new_boid);
 
-  float n_near(const Boid& i) const;
+  float close_boids(const Boid& chosen_boid) const;
 
-  Vector2 find_centermass(const Boid& i) const;
+  Vector2 find_centermass(const Boid& chosen_boid) const;
 
-  Vector2 find_separation(const Boid& i) const;
+  Vector2 find_separation(const Boid& chosen_boid) const;
 
-  Vector2 find_allignment(const Boid& i) const;
+  Vector2 find_allignment(const Boid& chosen_boid) const;
 
-  Vector2 find_cohesion(const Boid& i) const;
+  Vector2 find_cohesion(const Boid& chosen_boid) const;
 
-  bool is_predator(const Boid& x) const;
+  bool is_predator(const Boid& chosen_boid) const;
 
-  void in_limits(Boid& b, unsigned int i, unsigned int j);
+  void in_limits(Boid& chosen_boid, unsigned int window_height,
+                 unsigned int window_width);
 
-  Vector2 evolve(Boid& i, float dt);
+  Vector2 evolve(Boid& chosen_boid, float delta_time);
 
   Result state() const;
 
-  void update(sf::Time const& time, unsigned int i, unsigned int j);
+  void update(sf::Time const& time, unsigned int window_height,
+              unsigned int window_width);
 };
 }  // namespace pr
 

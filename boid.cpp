@@ -4,38 +4,29 @@
 #include <cmath>
 
 namespace pr {
-Boid::Boid() : x_{Vector2{}}, v_{Vector2{}}, vmax_{0.f} {}
+Boid::Boid() : position_{Vector2{}}, velocity_{Vector2{}}, velocity_max_{0.f} {}
 
 Boid::Boid(Vector2 position, Vector2 velocity, float maximum_velocity)
-    : x_{position}, v_{velocity}, vmax_{maximum_velocity} {}
+    : position_{position},
+      velocity_{velocity},
+      velocity_max_{maximum_velocity} {}
 
-Vector2 Boid::position() const { return x_; }
+Vector2 Boid::position() const { return position_; }
 
-Vector2 Boid::velocity() const { return v_; }
+Vector2 Boid::velocity() const { return velocity_; }
 
-float Boid::maximum_velocity() const { return vmax_; }
+float Boid::maximum_velocity() const { return velocity_max_; }
 
-Vector2 Boid::separation(const Boid& b_j, float s, float ds) const {
-  
-  if (std::abs(x_.dist(b_j.position())) < ds && x_.dist(b_j.position()) != 0 && boidshape_.getFillColor() != sf::Color::Black) {
-    Vector2 v1 = (b_j.position() - x_) * (-s);
+Vector2 Boid::separation(const Boid& other_boid, float separation_parameter,
+                         float distance_of_separation) const {
+  if (std::abs(position_.distance(other_boid.position())) <
+          distance_of_separation &&
+      position_.distance(other_boid.position()) != 0 &&
+      boidshape_.getFillColor() != sf::Color::Black) {
+    Vector2 separation_velocity =
+        (other_boid.position() - position_) * (-separation_parameter);
 
-    return v1;
-
-  } else {
-    Vector2 null{};
-
-    return null;
-  }
-}
-
-Vector2 Boid::allignment(const Boid& b_j, float a, float n, float d) const {
-  if (n >= 1 && std::abs(x_.dist(b_j.position())) < d &&
-      std::abs(x_.dist(b_j.position())) != 0 &&
-      boidshape_.getFillColor() == b_j.c_shape().getFillColor() && boidshape_.getFillColor() != sf::Color::Black) {
-    Vector2 v2 = (b_j.velocity() - v_) * (a / n);
-
-    return v2;
+    return separation_velocity;
 
   } else {
     Vector2 null{};
@@ -44,11 +35,33 @@ Vector2 Boid::allignment(const Boid& b_j, float a, float n, float d) const {
   }
 }
 
-Vector2 Boid::cohesion(const Vector2& x_cm, float c) const {
-  if (x_cm.x_axis() != 0 && x_cm.y_axis() != 0) {
-    Vector2 v3 = (x_cm - x_) * c;
+Vector2 Boid::allignment(const Boid& other_boid, float allignment_parameter,
+                         float close_boids, float closeness_parameter) const {
+  if (close_boids >= 1 &&
+      std::abs(position_.distance(other_boid.position())) <
+          closeness_parameter &&
+      std::abs(position_.distance(other_boid.position())) != 0 &&
+      boidshape_.getFillColor() == other_boid.get_shape().getFillColor() &&
+      boidshape_.getFillColor() != sf::Color::Black) {
+    Vector2 allignment_velocity = (other_boid.velocity() - velocity_) *
+                                  (allignment_parameter / close_boids);
 
-    return v3;
+    return allignment_velocity;
+
+  } else {
+    Vector2 null{};
+
+    return null;
+  }
+}
+
+Vector2 Boid::cohesion(const Vector2& center_of_mass,
+                       float cohesion_parameter) const {
+  if (center_of_mass.x_axis() != 0 && center_of_mass.y_axis() != 0) {
+    Vector2 cohesion_velocity =
+        (center_of_mass - position_) * cohesion_parameter;
+
+    return cohesion_velocity;
 
   } else {
     Vector2 null{};
@@ -58,44 +71,51 @@ Vector2 Boid::cohesion(const Vector2& x_cm, float c) const {
 }
 
 float Boid::get_angle() const {
-  if (v_.y_axis() != 0.f) {
-    if (v_.x_axis() >= 0.f && v_.y_axis() > 0.f) {
-      return (180. / M_PI) * std::atan(std::abs(v_.x_axis() / v_.y_axis())) +
-             2 * (90.f - ((180. / M_PI) *
-                          std::atan(std::abs(v_.x_axis() / v_.y_axis()))));
+  if (velocity_.y_axis() != 0.f) {
+    if (velocity_.x_axis() >= 0.f && velocity_.y_axis() > 0.f) {
+      return (180. / M_PI) *
+                 std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis())) +
+             2 * (90.f -
+                  ((180. / M_PI) * std::atan(std::abs(velocity_.x_axis() /
+                                                      velocity_.y_axis()))));
     }
 
-    if (v_.x_axis() < 0.f && v_.y_axis() > 0.f) {
-      return ((180. / M_PI) * std::atan(std::abs(v_.x_axis() / v_.y_axis()))) +
-             2 * (90.f - ((180. / M_PI) *
-                          std::atan(std::abs(v_.x_axis() / v_.y_axis())))) +
+    if (velocity_.x_axis() < 0.f && velocity_.y_axis() > 0.f) {
+      return ((180. / M_PI) *
+              std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis()))) +
+             2 * (90.f -
+                  ((180. / M_PI) * std::atan(std::abs(velocity_.x_axis() /
+                                                      velocity_.y_axis())))) +
              2 * ((180. / M_PI) *
-                  std::atan(std::abs(v_.x_axis() / v_.y_axis())));
+                  std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis())));
     }
 
-    if (v_.x_axis() <= 0.f && v_.y_axis() < 0.f) {
-      return ((180. / M_PI) * std::atan(std::abs(v_.x_axis() / v_.y_axis()))) +
-             4 * (90.f - ((180. / M_PI) *
-                          std::atan(std::abs(v_.x_axis() / v_.y_axis())))) +
+    if (velocity_.x_axis() <= 0.f && velocity_.y_axis() < 0.f) {
+      return ((180. / M_PI) *
+              std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis()))) +
+             4 * (90.f -
+                  ((180. / M_PI) * std::atan(std::abs(velocity_.x_axis() /
+                                                      velocity_.y_axis())))) +
              2 * ((180. / M_PI) *
-                  std::atan(std::abs(v_.x_axis() / v_.y_axis())));
+                  std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis())));
       ;
     }
 
-    if (v_.x_axis() > 0.f && v_.y_axis() < 0.f) {
-      return ((180. / M_PI) * std::atan(std::abs(v_.x_axis() / v_.y_axis())));
+    if (velocity_.x_axis() > 0.f && velocity_.y_axis() < 0.f) {
+      return ((180. / M_PI) *
+              std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis())));
     }
 
   } else {
-    if (v_.x_axis() < 0.f && v_.y_axis() == 0.f) {
+    if (velocity_.x_axis() < 0.f && velocity_.y_axis() == 0.f) {
       return 270.f;
     }
 
-    if (v_.x_axis() > 0.f && v_.y_axis() == 0.f) {
+    if (velocity_.x_axis() > 0.f && velocity_.y_axis() == 0.f) {
       return 90.f;
     }
 
-    if (v_.x_axis() == 0.f && v_.y_axis() == 0.f) {
+    if (velocity_.x_axis() == 0.f && velocity_.y_axis() == 0.f) {
       return 0.f;
     }
   }
@@ -104,38 +124,50 @@ float Boid::get_angle() const {
 }
 
 void Boid::limit_velocity() {
-  if (v_.mod() > vmax_) {
-    v_ = v_ * 0.5;
+  if (velocity_.lenght_of_vector() > velocity_max_) {
+    velocity_ = velocity_ * 0.5;
   }
 }
 
-void Boid::change_velocity(const Vector2& vec) { v_ += vec; }
+void Boid::change_velocity(const Vector2& velocity_offset) {
+  velocity_ += velocity_offset;
+}
 
-void Boid::change_position(const Vector2& vec) { x_ += vec; }
+void Boid::change_position(const Vector2& position_offset) {
+  position_ += position_offset;
+}
 
-bool Boid::operator==(const Boid& b) const {
-  return (x_ == b.x_ && v_ == b.v_ && vmax_ == b.vmax_);
+bool Boid::operator==(const Boid& other_boid) const {
+  return (position_ == other_boid.position_ &&
+          velocity_ == other_boid.velocity_ &&
+          velocity_max_ == other_boid.velocity_max_);
 };
 
-sf::CircleShape& Boid::shape() { return boidshape_; }
+sf::CircleShape& Boid::set_shape() { return boidshape_; }
 
-const sf::CircleShape& Boid::c_shape() const { return boidshape_; }
+const sf::CircleShape& Boid::get_shape() const { return boidshape_; }
 
-void Boid::setRadius(float r) { boidshape_.setRadius(r); }
+void Boid::setRadius(float radius) { boidshape_.setRadius(radius); }
 
 void Boid::setPointCount() { boidshape_.setPointCount(3); }
 
-void Boid::setOrigin(float x, float y) { boidshape_.setOrigin(x, y); }
+void Boid::setOrigin(float origin_x, float origin_y) {
+  boidshape_.setOrigin(origin_x, origin_y);
+}
 
-void Boid::setScale(float x, float y) { boidshape_.setScale(x, y); }
-
-void Boid::setPosition(const Vector2& vec) {
-  boidshape_.setPosition(sf::Vector2f{vec.x_axis(), vec.y_axis()});
-};
-
-void Boid::setRotation() { boidshape_.setRotation(get_angle()); }
+void Boid::setScale(float scale_x, float scale_y) {
+  boidshape_.setScale(scale_x, scale_y);
+}
 
 void Boid::setFillColor(const sf::Color& color) {
   boidshape_.setFillColor(color);
 }
+
+void Boid::setPosition(const Vector2& new_position) {
+  sf::Vector2f graphic_position{new_position.x_axis(), new_position.y_axis()};
+  boidshape_.setPosition(graphic_position);
+};
+
+void Boid::setRotation() { boidshape_.setRotation(get_angle()); }
+
 }  // namespace pr

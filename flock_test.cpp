@@ -3,7 +3,7 @@
 
 #include "doctest.h"
 
-TEST_CASE("Testing the n_near function") {
+TEST_CASE("Testing the close_boids function") {
   pr::Flock flock{10, 1, 1, 1, 1};
 
   const pr::Vector2 v1{5, 4};
@@ -21,7 +21,7 @@ TEST_CASE("Testing the n_near function") {
   flock.push_back(b3);
   flock.push_back(b4);
 
-  CHECK(flock.n_near(b1) == 2);
+  CHECK(flock.close_boids(b1) == 2);
 }
 
 TEST_CASE("Testing the find_centermass() function") {
@@ -45,7 +45,7 @@ TEST_CASE("Testing the find_centermass() function") {
 
     pr::Vector2 center_mass = flock.find_centermass(b1);
 
-    CHECK(flock.n_near(b1) == 2);
+    CHECK(flock.close_boids(b1) == 2);
 
     CHECK(center_mass.x_axis() == doctest::Approx(8.5));
     CHECK(center_mass.y_axis() == doctest::Approx(7.5));
@@ -74,7 +74,7 @@ TEST_CASE("Testing the find_centermass() function") {
 
     pr::Vector2 center_mass = flock.find_centermass(b1);
 
-    CHECK(flock.n_near(b1) == 3);
+    CHECK(flock.close_boids(b1) == 3);
 
     CHECK(center_mass.x_axis() == doctest::Approx(7.000).epsilon(0.001));
     CHECK(center_mass.y_axis() == doctest::Approx(7.233).epsilon(0.001));
@@ -138,10 +138,10 @@ TEST_CASE("Testing the is_predator function") {
   pr::Boid b3{v3, v5, 1};
   pr::Boid b4{v4, v5, 1};
 
-  b1.shape().setFillColor(sf::Color::Red);
-  b2.shape().setFillColor(sf::Color::Red);
-  b3.shape().setFillColor(sf::Color::Black);
-  b4.shape().setFillColor(sf::Color::Black);
+  b1.set_shape().setFillColor(sf::Color::Red);
+  b2.set_shape().setFillColor(sf::Color::Red);
+  b3.set_shape().setFillColor(sf::Color::Black);
+  b4.set_shape().setFillColor(sf::Color::Black);
 
   pr::Flock flock{50, 10, 0.5, 0.5, 0.5};
 
@@ -183,7 +183,7 @@ TEST_CASE("Testing the evolve function") {
     flock.push_back(b4);
     flock.push_back(b5);
 
-    CHECK(flock.n_near(b1) == 2);
+    CHECK(flock.close_boids(b1) == 2);
 
     CHECK(b1.separation(b2, 0.5, 2).x_axis() == 0);
     CHECK(b1.separation(b2, 0.5, 2).y_axis() == 0);
@@ -192,11 +192,11 @@ TEST_CASE("Testing the evolve function") {
     CHECK(b1.separation(b5, 0.5, 2).y_axis() ==
           doctest::Approx(-0.500).epsilon(0.001));
 
-    CHECK(b1.allignment(b2, 0.4, flock.n_near(b1), 10).x_axis() == 2);
-    CHECK(b1.allignment(b2, 0.4, flock.n_near(b1), 10).y_axis() ==
+    CHECK(b1.allignment(b2, 0.4, flock.close_boids(b1), 10).x_axis() == 2);
+    CHECK(b1.allignment(b2, 0.4, flock.close_boids(b1), 10).y_axis() ==
           doctest::Approx(-0.600).epsilon(0.001));
-    CHECK(b1.allignment(b5, 0.4, flock.n_near(b1), 10).x_axis() == -1);
-    CHECK(b1.allignment(b5, 0.4, flock.n_near(b1), 10).y_axis() ==
+    CHECK(b1.allignment(b5, 0.4, flock.close_boids(b1), 10).x_axis() == -1);
+    CHECK(b1.allignment(b5, 0.4, flock.close_boids(b1), 10).y_axis() ==
           doctest::Approx(0.600).epsilon(0.001));
 
     CHECK(flock.find_centermass(b1).x_axis() ==
@@ -268,7 +268,7 @@ TEST_CASE("Testing the evolve function") {
     flock.push_back(b6);
     flock.push_back(b7);
 
-    CHECK(flock.n_near(b1) == 4);
+    CHECK(flock.close_boids(b1) == 4);
 
     CHECK(b1.separation(b2, 0.5, 2).x_axis() == 0);
     CHECK(b1.separation(b2, 0.5, 2).y_axis() == 0);
@@ -283,21 +283,21 @@ TEST_CASE("Testing the evolve function") {
     CHECK(b1.separation(b7, 0.5, 2).y_axis() ==
           doctest::Approx(0.480).epsilon(0.001));
 
-    CHECK(b1.allignment(b2, 0.4, flock.n_near(b1), 10).x_axis() ==
+    CHECK(b1.allignment(b2, 0.4, flock.close_boids(b1), 10).x_axis() ==
           doctest::Approx(0.120).epsilon(0.001));
-    CHECK(b1.allignment(b2, 0.4, flock.n_near(b1), 10).y_axis() ==
+    CHECK(b1.allignment(b2, 0.4, flock.close_boids(b1), 10).y_axis() ==
           doctest::Approx(0.180).epsilon(0.001));
-    CHECK(b1.allignment(b3, 0.4, flock.n_near(b1), 10).x_axis() ==
+    CHECK(b1.allignment(b3, 0.4, flock.close_boids(b1), 10).x_axis() ==
           doctest::Approx(0.730).epsilon(0.001));
-    CHECK(b1.allignment(b3, 0.4, flock.n_near(b1), 10).y_axis() ==
+    CHECK(b1.allignment(b3, 0.4, flock.close_boids(b1), 10).y_axis() ==
           doctest::Approx(0.350).epsilon(0.001));
-    CHECK(b1.allignment(b6, 0.4, flock.n_near(b1), 10).x_axis() ==
+    CHECK(b1.allignment(b6, 0.4, flock.close_boids(b1), 10).x_axis() ==
           doctest::Approx(3.900).epsilon(0.001));
-    CHECK(b1.allignment(b6, 0.4, flock.n_near(b1), 10).y_axis() ==
+    CHECK(b1.allignment(b6, 0.4, flock.close_boids(b1), 10).y_axis() ==
           doctest::Approx(3.680).epsilon(0.001));
-    CHECK(b1.allignment(b7, 0.4, flock.n_near(b1), 10).x_axis() ==
+    CHECK(b1.allignment(b7, 0.4, flock.close_boids(b1), 10).x_axis() ==
           doctest::Approx(2.530).epsilon(0.001));
-    CHECK(b1.allignment(b7, 0.4, flock.n_near(b1), 10).y_axis() ==
+    CHECK(b1.allignment(b7, 0.4, flock.close_boids(b1), 10).y_axis() ==
           doctest::Approx(2.220).epsilon(0.001));
 
     CHECK(flock.find_centermass(b1).x_axis() ==
@@ -361,7 +361,7 @@ TEST_CASE("Testing the evolve function") {
     flock.push_back(b3);
     flock.push_back(b4);
 
-    CHECK(flock.n_near(b1) == 0);
+    CHECK(flock.close_boids(b1) == 0);
 
     pr::Vector2 vec = flock.evolve(b1, 0.5);
 
@@ -438,5 +438,4 @@ TEST_CASE("Testing the state() function") {
     CHECK(state.medium_distance == doctest::Approx(4.280).epsilon(0.001));
     CHECK(state.err_distance == doctest::Approx(0.864).epsilon(0.001));
   }
-
 }

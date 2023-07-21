@@ -11,44 +11,46 @@ float Vector2::x_axis() const { return x_; }
 
 float Vector2::y_axis() const { return y_; }
 
-Vector2 Vector2::operator+=(const Vector2 &vec) {
-  x_ += vec.x_;
-  y_ += vec.y_;
+Vector2 Vector2::operator+=(const Vector2 &other_vector) {
+  x_ += other_vector.x_;
+  y_ += other_vector.y_;
 
   return *this;
 }
 
-Vector2 Vector2::operator+(const Vector2 &vec) const {
+Vector2 Vector2::operator+(const Vector2 &other_vector) const {
   Vector2 alias = *this;
 
-  return alias += vec;
+  return alias += other_vector;
 }
 
-Vector2 Vector2::operator-(const Vector2 &vec) const {
+Vector2 Vector2::operator-(const Vector2 &other_vector) const {
   Vector2 alias = *this;
-  Vector2 neg_vec{-vec.x_, -vec.y_};
+  Vector2 neg_vec{-other_vector.x_, -other_vector.y_};
 
   return alias += (neg_vec);
 }
 
-float Vector2::dist(const Vector2 &vec) const {
+float Vector2::distance(const Vector2 &other_vector) const {
   Vector2 alias = *this;
-  Vector2 difference = alias - vec;
+  Vector2 difference = alias - other_vector;
 
   return std::sqrt(std::pow(difference.x_, 2) + std::pow(difference.y_, 2));
 }
 
-float Vector2::mod() const { return std::sqrt(x_ * x_ + y_ * y_); }
+float Vector2::lenght_of_vector() const { return std::sqrt(x_ * x_ + y_ * y_); }
 
-bool Vector2::operator!=(const Vector2 &vec) const {
-  return (x_ != vec.x_ || y_ != vec.y_);
+bool Vector2::operator!=(const Vector2 &other_vector) const {
+  return (x_ != other_vector.x_ || y_ != other_vector.y_);
 }
 
-bool Vector2::operator==(const Vector2 &vec) const { return !(*this != vec); }
+bool Vector2::operator==(const Vector2 &other_vector) const {
+  return !(*this != other_vector);
+}
 
-Vector2 Vector2::operator*(float s) const {
-  Vector2 v1{s * x_, s * y_};
+Vector2 Vector2::operator*(float scalar) const {
+  Vector2 result{scalar * x_, scalar * y_};
 
-  return v1;
+  return result;
 }
 }  // namespace pr
