@@ -66,8 +66,8 @@ int main() {
   sprite.setScale(background_scaleX, background_scaleY);
   sprite.setPosition(0.f, 0.f);
 
-  std::default_random_engine eng;
-  std::normal_distribution<float> dist;
+  std::default_random_engine rand_engine;
+  std::normal_distribution<float> normal_dist;
 
   pr::Flock flock{closeness_parameter, distance_of_separation, separation_parameter, allignment_parameter, cohesion_parameter};
 
@@ -82,12 +82,12 @@ int main() {
         case sf::Event::MouseButtonPressed: {
           switch (event.mouseButton.button) {
             case sf::Mouse::Left: {
-              sf::Vector2i position = sf::Mouse::getPosition(window);
-              float positionf_x = static_cast<float>(position.x);
-              float positionf_y = static_cast<float>(position.y);
-              pr::Vector2 position_f{positionf_x, positionf_y};
+              const sf::Vector2i position = sf::Mouse::getPosition(window);
+              const float positionf_x = static_cast<float>(position.x);
+              const float positionf_y = static_cast<float>(position.y);
+              const pr::Vector2 position_f{positionf_x, positionf_y};
 
-              pr::Vector2 speed{dist(eng), dist(eng)};
+              const pr::Vector2 speed{normal_dist(rand_engine), normal_dist(rand_engine)};
 
               pr::Boid boid{position_f, speed, 0.5f};
               boid.setPosition(position_f);
@@ -104,12 +104,12 @@ int main() {
             }
 
             case sf::Mouse::Right: {
-              sf::Vector2i position = sf::Mouse::getPosition(window);
-              float positionf_x = static_cast<float>(position.x);
-              float positionf_y = static_cast<float>(position.y);
-              pr::Vector2 position_f{positionf_x, positionf_y};
+              const sf::Vector2i position = sf::Mouse::getPosition(window);
+              const float positionf_x = static_cast<float>(position.x);
+              const float positionf_y = static_cast<float>(position.y);
+              const pr::Vector2 position_f{positionf_x, positionf_y};
 
-              pr::Vector2 speed{dist(eng), dist(eng)};
+              const pr::Vector2 speed{normal_dist(rand_engine), normal_dist(rand_engine)};
 
               pr::Boid boid{position_f, speed, 0.5f};
               boid.setPosition(position_f);
@@ -144,7 +144,7 @@ int main() {
     flock.update(time_per_frame, 0.9 * sf::VideoMode::getDesktopMode().width,
                  0.9 * sf::VideoMode::getDesktopMode().height);
 
-    pr::Result flock_state = flock.state();
+    const pr::Simulation_state flock_state = flock.state();
 
     if (flock.all_boids().size() >= 2 && time_passed.asSeconds() >= 1.f) {
       std::cout << "Medium velocity: " << flock_state.medium_velocity << " +/- "

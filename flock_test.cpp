@@ -395,7 +395,7 @@ TEST_CASE("Testing the state() function") {
     flock.push_back(b2);
     flock.push_back(b3);
 
-    pr::Result state = flock.state();
+    pr::Simulation_state state = flock.state();
 
     CHECK(state.medium_velocity == doctest::Approx(10.632).epsilon(0.001));
     CHECK(state.err_velocity == doctest::Approx(3.266).epsilon(0.001));
@@ -430,7 +430,7 @@ TEST_CASE("Testing the state() function") {
     flock.push_back(b4);
     flock.push_back(b5);
 
-    pr::Result state = flock.state();
+    pr::Simulation_state state = flock.state();
 
     CHECK(state.medium_velocity == doctest::Approx(9.541).epsilon(0.001));
     CHECK(state.err_velocity == doctest::Approx(2.732).epsilon(0.001));

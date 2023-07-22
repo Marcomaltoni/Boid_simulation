@@ -1,8 +1,8 @@
 #define _USE_MATH_DEFINES
 #include "boid.hpp"
 
-#include <cmath>
 #include <cassert>
+#include <cmath>
 
 namespace pr {
 Boid::Boid() : position_{Vector2{}}, velocity_{Vector2{}}, velocity_max_{0.f} {}
@@ -20,17 +20,17 @@ float Boid::maximum_velocity() const { return velocity_max_; }
 
 Vector2 Boid::separation(const Boid& other_boid, float separation_parameter,
                          float distance_of_separation) const {
-  if (std::abs(position_.distance(other_boid.position())) <
+  if (position_.distance(other_boid.position()) <
           distance_of_separation &&
-      position_.distance(other_boid.position()) != 0 &&
+      position_.distance(other_boid.position()) != 0.f &&
       boidshape_.getFillColor() != sf::Color::Black) {
-    Vector2 separation_velocity =
+    const Vector2 separation_velocity =
         (other_boid.position() - position_) * (-separation_parameter);
 
     return separation_velocity;
 
   } else {
-    Vector2 null{};
+    const Vector2 null{};
 
     return null;
   }
@@ -38,19 +38,19 @@ Vector2 Boid::separation(const Boid& other_boid, float separation_parameter,
 
 Vector2 Boid::allignment(const Boid& other_boid, float allignment_parameter,
                          float close_boids, float closeness_parameter) const {
-  if (close_boids >= 1 &&
-      std::abs(position_.distance(other_boid.position())) <
+  if (close_boids >= 1.f &&
+      position_.distance(other_boid.position()) <
           closeness_parameter &&
-      std::abs(position_.distance(other_boid.position())) != 0 &&
+      position_.distance(other_boid.position()) != 0.f &&
       boidshape_.getFillColor() == other_boid.get_shape().getFillColor() &&
       boidshape_.getFillColor() != sf::Color::Black) {
-    Vector2 allignment_velocity = (other_boid.velocity() - velocity_) *
-                                  (allignment_parameter / close_boids);
+    const Vector2 allignment_velocity = (other_boid.velocity() - velocity_) *
+                                        (allignment_parameter / close_boids);
 
     return allignment_velocity;
 
   } else {
-    Vector2 null{};
+    const Vector2 null{};
 
     return null;
   }
@@ -59,13 +59,13 @@ Vector2 Boid::allignment(const Boid& other_boid, float allignment_parameter,
 Vector2 Boid::cohesion(const Vector2& center_of_mass,
                        float cohesion_parameter) const {
   if (center_of_mass.x_axis() != 0 && center_of_mass.y_axis() != 0) {
-    Vector2 cohesion_velocity =
+    const Vector2 cohesion_velocity =
         (center_of_mass - position_) * cohesion_parameter;
 
     return cohesion_velocity;
 
   } else {
-    Vector2 null{};
+    const Vector2 null{};
 
     return null;
   }
@@ -74,37 +74,48 @@ Vector2 Boid::cohesion(const Vector2& center_of_mass,
 float Boid::get_angle() const {
   if (velocity_.y_axis() != 0.f) {
     if (velocity_.x_axis() >= 0.f && velocity_.y_axis() > 0.f) {
-      return (180. / M_PI) *
-                 std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis())) +
-             2 * (90.f -
-                  ((180. / M_PI) * std::atan(std::abs(velocity_.x_axis() /
-                                                      velocity_.y_axis()))));
+      const float angle =
+          (180. / M_PI) *
+              std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis())) +
+          2 * (90.f -
+               ((180. / M_PI) *
+                std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis()))));
+      assert(angle >= 90.f && angle <= 180.f);
+      return angle;
     }
 
     if (velocity_.x_axis() < 0.f && velocity_.y_axis() > 0.f) {
-      return ((180. / M_PI) *
-              std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis()))) +
-             2 * (90.f -
-                  ((180. / M_PI) * std::atan(std::abs(velocity_.x_axis() /
-                                                      velocity_.y_axis())))) +
-             2 * ((180. / M_PI) *
-                  std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis())));
+      const float angle =
+          ((180. / M_PI) *
+           std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis()))) +
+          2 * (90.f -
+               ((180. / M_PI) *
+                std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis())))) +
+          2 * ((180. / M_PI) *
+               std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis())));
+      assert(angle >= 180.f && angle <= 270.f);
+      return angle;
     }
 
     if (velocity_.x_axis() <= 0.f && velocity_.y_axis() < 0.f) {
-      return ((180. / M_PI) *
-              std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis()))) +
-             4 * (90.f -
-                  ((180. / M_PI) * std::atan(std::abs(velocity_.x_axis() /
-                                                      velocity_.y_axis())))) +
-             2 * ((180. / M_PI) *
-                  std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis())));
-      ;
+      const float angle =
+          ((180. / M_PI) *
+           std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis()))) +
+          4 * (90.f -
+               ((180. / M_PI) *
+                std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis())))) +
+          2 * ((180. / M_PI) *
+               std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis())));
+      assert(angle >= 270.f && angle <= 360.f);
+      return angle;
     }
 
     if (velocity_.x_axis() > 0.f && velocity_.y_axis() < 0.f) {
-      return ((180. / M_PI) *
-              std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis())));
+      const float angle =
+          ((180. / M_PI) *
+           std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis())));
+      assert(angle >= 0.f && angle <= 90.f);
+      return angle;
     }
 
   } else {
@@ -125,8 +136,8 @@ float Boid::get_angle() const {
 }
 
 void Boid::limit_velocity() {
-  if (velocity_.lenght_of_vector() == velocity_max_) {
-    velocity_ = velocity_ * 0.5;
+  if (velocity_.lenght_of_vector() >= velocity_max_) {
+    velocity_ = velocity_ * 0.5f;
   }
 }
 
@@ -165,7 +176,8 @@ void Boid::setFillColor(const sf::Color& color) {
 }
 
 void Boid::setPosition(const Vector2& new_position) {
-  sf::Vector2f graphic_position{new_position.x_axis(), new_position.y_axis()};
+  const sf::Vector2f graphic_position{new_position.x_axis(),
+                                      new_position.y_axis()};
   boidshape_.setPosition(graphic_position);
 };
 

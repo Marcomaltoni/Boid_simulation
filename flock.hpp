@@ -7,7 +7,7 @@
 
 namespace pr {
 
-struct Result {
+struct Simulation_state {
   float medium_velocity;
   float medium_distance;
   float err_velocity;
@@ -33,7 +33,7 @@ class Flock {
 
   std::vector<Boid> all_boids() const;
 
-  int size() const;
+  std::size_t size() const;
 
   Boid single_boid(int number_of_boid) const;
 
@@ -56,7 +56,7 @@ class Flock {
 
   Vector2 evolve(Boid& chosen_boid, float delta_time);
 
-  Result state() const;
+  Simulation_state state() const;
 
   void update(sf::Time const& time, unsigned int window_height,
               unsigned int window_width);
