@@ -237,7 +237,7 @@ Simulation_state Flock::state() const {
         });
 
     const float err_velocity =
-        std::sqrt((1.f / ((vsize_f - 1.f))) * quadratic_difference_v);
+        std::sqrt((1.f / ((vsize_f - 1.f) * vsize_f)) * quadratic_difference_v);
 
     const float medium_distance =
         (std::accumulate(distances.begin(), distances.end(), 0.f)) / psize_f;
