@@ -3,6 +3,24 @@
 
 #include "doctest.h"
 
+TEST_CASE("Testing the quadratic_difference() method") {
+  SUBCASE("Three values:") {
+    const std::vector<float> generic_vector{7.810249676f, 9.219544457f,
+                                            14.86606875};
+    const float result = pr::quadratic_difference(generic_vector);
+
+    CHECK(result == doctest::Approx(27.88464373).epsilon(0.00000001));
+  }
+
+  SUBCASE("Three values") {
+    const std::vector<float> generic_vector{2.828427125f, 8.485281374f,
+                                            5.656854249f};
+    const float result = pr::quadratic_difference(generic_vector);
+
+    CHECK(result == doctest::Approx(16.0).epsilon(0.1));
+  }
+}
+
 TEST_CASE("Testing the close_boids() method") {
   pr::Flock flock{100.f, 30.f, 0.05f, 0.5f, 0.0005f};
 
@@ -11,10 +29,10 @@ TEST_CASE("Testing the close_boids() method") {
   const pr::Vector2 v3{70.f, 90.f};
   const pr::Vector2 v4{130.f, 100.f};
 
-  const pr::Boid b1{v1, v1, 1.f};
-  const pr::Boid b2{v2, v2, 1.f};
-  const pr::Boid b3{v3, v3, 1.f};
-  const pr::Boid b4{v4, v4, 1.f};
+  const pr::Boid b1{v1, v1, 500.f};
+  const pr::Boid b2{v2, v2, 500.f};
+  const pr::Boid b3{v3, v3, 500.f};
+  const pr::Boid b4{v4, v4, 500.f};
 
   flock.push_back(b1);
   flock.push_back(b2);
@@ -33,10 +51,10 @@ TEST_CASE("Testing the find_centermass() method") {
     const pr::Vector2 v3{70.f, 90.f};
     const pr::Vector2 v4{140.f, 100.f};
 
-    const pr::Boid b1{v1, v1, 1.f};
-    const pr::Boid b2{v2, v2, 1.f};
-    const pr::Boid b3{v3, v3, 1.f};
-    const pr::Boid b4{v4, v4, 1.f};
+    const pr::Boid b1{v1, v1, 200.f};
+    const pr::Boid b2{v2, v2, 200.f};
+    const pr::Boid b3{v3, v3, 200.f};
+    const pr::Boid b4{v4, v4, 200.f};
 
     flock.push_back(b1);
     flock.push_back(b2);
@@ -60,11 +78,11 @@ TEST_CASE("Testing the find_centermass() method") {
     const pr::Vector2 v4{135.f, 106.f};
     const pr::Vector2 v5{31.f, 52.f};
 
-    const pr::Boid b1{v1, v1, 1.f};
-    const pr::Boid b2{v2, v2, 1.f};
-    const pr::Boid b3{v3, v3, 1.f};
-    const pr::Boid b4{v4, v4, 1.f};
-    const pr::Boid b5{v5, v5, 1.f};
+    const pr::Boid b1{v1, v1, 100.f};
+    const pr::Boid b2{v2, v2, 100.f};
+    const pr::Boid b3{v3, v3, 100.f};
+    const pr::Boid b4{v4, v4, 100.f};
+    const pr::Boid b5{v5, v5, 100.f};
 
     flock.push_back(b1);
     flock.push_back(b2);
@@ -87,9 +105,9 @@ TEST_CASE("Testing the find_centermass() method") {
     const pr::Vector2 v3{76.f, 95.f};
     const pr::Vector2 v4{135.f, 106.f};
 
-    const pr::Boid b1{v1, v1, 1.f};
-    const pr::Boid b3{v3, v3, 1.f};
-    const pr::Boid b4{v4, v4, 1.f};
+    const pr::Boid b1{v1, v1, 100.f};
+    const pr::Boid b3{v3, v3, 100.f};
+    const pr::Boid b4{v4, v4, 100.f};
 
     flock.push_back(b1);
     flock.push_back(b3);
@@ -109,10 +127,10 @@ TEST_CASE("Testing the find_centermass() method") {
     const pr::Vector2 v3{30000.f, 30000.f};
     const pr::Vector2 v4{20000.f, 20000.f};
 
-    const pr::Boid b1{v1, v1, 1.f};
-    const pr::Boid b2{v2, v2, 1.f};
-    const pr::Boid b3{v3, v3, 1.f};
-    const pr::Boid b4{v4, v4, 1.f};
+    const pr::Boid b1{v1, v1, 100000.f};
+    const pr::Boid b2{v2, v2, 100000.f};
+    const pr::Boid b3{v3, v3, 100000.f};
+    const pr::Boid b4{v4, v4, 100000.f};
 
     flock.push_back(b1);
     flock.push_back(b2);
@@ -133,10 +151,10 @@ TEST_CASE("Testing the is_predator() method") {
   const pr::Vector2 v4{1000.f, 1000.f};
   const pr::Vector2 v5{1.f, 1.f};
 
-  pr::Boid b1{v1, v5, 1.f};
-  pr::Boid b2{v2, v5, 1.f};
-  pr::Boid b3{v3, v5, 1.f};
-  pr::Boid b4{v4, v5, 1.f};
+  pr::Boid b1{v1, v5, 10000.f};
+  pr::Boid b2{v2, v5, 10000.f};
+  pr::Boid b3{v3, v5, 10000.f};
+  pr::Boid b4{v4, v5, 10000.f};
 
   b1.set_shape().setFillColor(sf::Color::Red);
   b2.set_shape().setFillColor(sf::Color::Red);
@@ -170,10 +188,10 @@ TEST_CASE("Testing the evolve() method") {
     const pr::Vector2 v10{50.f, 80.f};
 
     pr::Boid b1{v1, v2, 1.f};
-    const pr::Boid b2{v3, v4, 1.f};
-    const pr::Boid b3{v5, v6, 1.f};
-    const pr::Boid b4{v7, v8, 1.f};
-    const pr::Boid b5{v9, v10, 1.f};
+    const pr::Boid b2{v3, v4, 10000.f};
+    const pr::Boid b3{v5, v6, 10000.f};
+    const pr::Boid b4{v7, v8, 10000.f};
+    const pr::Boid b5{v9, v10, 10000.f};
 
     pr::Flock flock{100.f, 30.f, 0.05f, 0.5f, 0.0005f};
 
@@ -260,12 +278,12 @@ TEST_CASE("Testing the evolve() method") {
     const pr::Vector2 v14{378.f, 389.f};
 
     pr::Boid b1{v1, v2, 1.f};
-    const pr::Boid b2{v3, v4, 1.f};
-    const pr::Boid b3{v5, v6, 1.f};
-    const pr::Boid b4{v7, v8, 1.f};
-    const pr::Boid b5{v9, v10, 1.f};
-    const pr::Boid b6{v11, v12, 1.f};
-    const pr::Boid b7{v13, v14, 1.f};
+    const pr::Boid b2{v3, v4, 1000.f};
+    const pr::Boid b3{v5, v6, 1000.f};
+    const pr::Boid b4{v7, v8, 1000.f};
+    const pr::Boid b5{v9, v10, 1000.f};
+    const pr::Boid b6{v11, v12, 1000.f};
+    const pr::Boid b7{v13, v14, 1000.f};
 
     pr::Flock flock{100.f, 30.f, 0.05f, 0.5f, 0.0005f};
 
@@ -367,9 +385,9 @@ TEST_CASE("Testing the evolve() method") {
     const pr::Vector2 v8{1.f, 1.f};
 
     pr::Boid b1{v1, v2, 1.f};
-    const pr::Boid b2{v3, v4, 1.f};
-    const pr::Boid b3{v5, v6, 1.f};
-    const pr::Boid b4{v7, v8, 1.f};
+    const pr::Boid b2{v3, v4, 1000.f};
+    const pr::Boid b3{v5, v6, 1000.f};
+    const pr::Boid b4{v7, v8, 1000.f};
 
     pr::Flock flock{100.f, 30.f, 0.05f, 0.5f, 0.0005f};
 
@@ -402,9 +420,9 @@ TEST_CASE("Testing the state() function") {
     const pr::Vector2 v5{8.f, 9.f};
     const pr::Vector2 v6{10.f, 11.f};
 
-    const pr::Boid b1{v1, v2, 1.f};
-    const pr::Boid b2{v3, v4, 1.f};
-    const pr::Boid b3{v5, v6, 1.f};
+    const pr::Boid b1{v1, v2, 1000.f};
+    const pr::Boid b2{v3, v4, 1000.f};
+    const pr::Boid b3{v5, v6, 1000.f};
 
     pr::Flock flock{100.f, 30.f, 0.05f, 0.5f, 0.0005f};
 
@@ -412,13 +430,28 @@ TEST_CASE("Testing the state() function") {
     flock.push_back(b2);
     flock.push_back(b3);
 
+    std::vector<float> velocities = flock.extract_velocities();
+    std::vector<float> distances = flock.extract_distances();
+
     pr::Simulation_state state = flock.state();
 
-    CHECK(state.medium_velocity == doctest::Approx(10.63195429).epsilon(0.00000001));
-    CHECK(state.err_velocity == doctest::Approx(2.155792342).epsilon(0.000000001));
+    CHECK(velocities.size() == 3);
+    CHECK(velocities[0] == doctest::Approx(7.8102497).epsilon(0.0000001));
+    CHECK(velocities[1] == doctest::Approx(9.2195445).epsilon(0.0000001));
+    CHECK(velocities[2] == doctest::Approx(14.866069).epsilon(0.000001));
 
-    CHECK(state.medium_distance == doctest::Approx(5.656854249).epsilon(0.000000001));
-    CHECK(state.err_distance == doctest::Approx(1.632993162).epsilon(0.0000000001));
+    CHECK(distances.size() == 3);
+    CHECK(distances[0] == doctest::Approx(2.8284271).epsilon(0.0000001));
+    CHECK(distances[1] == doctest::Approx(8.4852814).epsilon(0.0000001));
+    CHECK(distances[2] == doctest::Approx(5.6568542).epsilon(0.0000001));
+
+    CHECK(state.medium_velocity ==
+          doctest::Approx(10.6319544).epsilon(0.0000001));
+    CHECK(state.err_velocity == doctest::Approx(2.1557924).epsilon(0.0000001));
+
+    CHECK(state.medium_distance ==
+          doctest::Approx(5.6568542).epsilon(0.0000001));
+    CHECK(state.err_distance == doctest::Approx(1.6329931).epsilon(0.0000001));
   }
 
   SUBCASE("Five boids:") {
@@ -433,11 +466,11 @@ TEST_CASE("Testing the state() function") {
     const pr::Vector2 v9{11.6f, 3.5f};
     const pr::Vector2 v10{9.1f, 3.5f};
 
-    const pr::Boid b1{v1, v2, 1.f};
-    const pr::Boid b2{v3, v4, 1.f};
-    const pr::Boid b3{v5, v6, 1.f};
-    const pr::Boid b4{v7, v8, 1.f};
-    const pr::Boid b5{v9, v10, 1.f};
+    const pr::Boid b1{v1, v2, 1000.f};
+    const pr::Boid b2{v3, v4, 1000.f};
+    const pr::Boid b3{v5, v6, 1000.f};
+    const pr::Boid b4{v7, v8, 1000.f};
+    const pr::Boid b5{v9, v10, 1000.f};
 
     pr::Flock flock{100.f, 30.f, 0.05f, 0.5f, 0.0005f};
 
@@ -447,12 +480,39 @@ TEST_CASE("Testing the state() function") {
     flock.push_back(b4);
     flock.push_back(b5);
 
+    const std::vector<float> velocities = flock.extract_velocities();
+    const std::vector<float> distances = flock.extract_distances();
+
     pr::Simulation_state state = flock.state();
 
-    CHECK(state.medium_velocity == doctest::Approx(9.541).epsilon(0.001));
-    CHECK(state.err_velocity == doctest::Approx(6.109).epsilon(0.001));
+    CHECK(velocities.size() == 5);
+    CHECK(velocities[0] == doctest::Approx(15.081446).epsilon(0.000001));
+    CHECK(velocities[1] == doctest::Approx(9.9322706).epsilon(0.0000001));
+    CHECK(velocities[2] == doctest::Approx(3.0413813).epsilon(0.0000001));
+    CHECK(velocities[3] == doctest::Approx(9.8979796).epsilon(0.0000001));
+    CHECK(velocities[4] == doctest::Approx(9.7498718).epsilon(0.0000001));
 
-    CHECK(state.medium_distance == doctest::Approx(4.280).epsilon(0.001));
-    CHECK(state.err_distance == doctest::Approx(3.346).epsilon(0.001));
+    CHECK(distances.size() == 10);
+    CHECK(distances[0] == doctest::Approx(1.421267).epsilon(0.000001));
+    CHECK(distances[1] == doctest::Approx(6.5946948).epsilon(0.0000001));
+    CHECK(distances[2] == doctest::Approx(3.106445).epsilon(0.000001));
+    CHECK(distances[3] == doctest::Approx(6.7801180).epsilon(0.0000001));
+    CHECK(distances[4] == doctest::Approx(5.2009615).epsilon(0.0000001));
+    CHECK(distances[5] == doctest::Approx(4.4821870).epsilon(0.0000001));
+    CHECK(distances[6] == doctest::Approx(6.9778220).epsilon(0.0000001));
+    CHECK(distances[7] == doctest::Approx(9.6829748).epsilon(0.0000001));
+    CHECK(distances[8] == doctest::Approx(10.401923).epsilon(0.000001));
+    CHECK(distances[9] == doctest::Approx(6.4404969).epsilon(0.0000001));
+
+    CHECK(state.medium_velocity ==
+          doctest::Approx(9.5405899).epsilon(0.0000001));
+    CHECK(pr::quadratic_difference(velocities) ==
+          doctest::Approx(73.265739).epsilon(0.000001));
+    CHECK(state.err_velocity == doctest::Approx(1.9139715).epsilon(0.0000001));
+
+    CHECK(state.medium_distance == doctest::Approx(6.108889).epsilon(0.000001));
+    CHECK(pr::quadratic_difference(distances) ==
+          doctest::Approx(67.214754).epsilon(0.000001));
+    CHECK(state.err_distance == doctest::Approx(0.8641936).epsilon(0.0000001));
   }
 }

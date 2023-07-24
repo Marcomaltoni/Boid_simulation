@@ -7,6 +7,7 @@
 #include <numeric>
 
 namespace pr {
+
 Flock::Flock(const float distance, const float ds_parameter,
              const float s_parameter, const float a_parameter,
              const float c_parameter)
@@ -60,10 +61,9 @@ Vector2 Flock::find_centermass(const Boid& chosen_boid) const {
     const Vector2 mass_center =
         std::accumulate(near_boids.begin(), near_boids.end(), Vector2{0.f, 0.f},
                         [](const Vector2& a, const Vector2& b) {
-                          const float x = a.x_axis() + b.x_axis();
-                          const float y = a.y_axis() + b.y_axis();
+                         Vector2 result = a + b;
 
-                          return Vector2{x, y};
+                          return result;
                         }) *
         (1.f / close_boids(chosen_boid));
 
@@ -205,56 +205,62 @@ Vector2 Flock::evolve(Boid& chosen_boid, float delta_time) {
   }
 }
 
+std::vector<float> Flock::extract_velocities() const {
+  std::vector<float> velocities;
+
+  for (const Boid& boid : boids_) {
+    velocities.push_back(boid.velocity().lenght_of_vector());
+  }
+
+  return velocities;
+}
+
+std::vector<float> Flock::extract_distances() const {
+  std::vector<float> distances;
+
+  for (const Boid& boid : boids_) {
+    auto boid_position = std::find(boids_.begin(), boids_.end(), boid);
+    std::size_t number_of_boid = std::distance(boids_.begin(), boid_position);
+
+    for (std::size_t i{number_of_boid + 1}; i < boids_.size(); ++i) {
+      const float distance =
+          boid.position().distance(single_boid(i).position());
+      distances.push_back(distance);
+    }
+  }
+
+  return distances;
+}
+
 Simulation_state Flock::state() const {
   if (boids_.size() > 2) {
-    std::vector<float> velocities;
-    std::vector<float> distances;
-
-    for (const Boid& boid : all_boids()) {
-      velocities.push_back(boid.velocity().lenght_of_vector());
-
-      auto boid_position = std::find(boids_.begin(), boids_.end(), boid);
-      std::size_t number_of_boid = std::distance(boids_.begin(), boid_position);
-
-      for (std::size_t i{number_of_boid + 1}; i < boids_.size(); ++i) {
-        const float distance =
-            boid.position().distance(single_boid(i).position());
-        distances.push_back(distance);
-      }
-    }
-
-    float vsize_f = static_cast<float>(velocities.size());
-    float psize_f = static_cast<float>(distances.size());
+    const std::vector<float> velocities = extract_velocities();
+    const std::vector<float> distances = extract_distances();
 
     const float medium_velocity =
-        (std::accumulate(velocities.begin(), velocities.end(), 0.f)) / vsize_f;
+        (std::accumulate(velocities.begin(), velocities.end(), 0.f)) /
+        velocities.size();
 
-    float quadratic_difference_v = std::accumulate(
-        velocities.begin(), velocities.end(), 0.f,
-        [&medium_velocity](float initial_value, float single_velocity) {
-          return initial_value +
-                 std::pow((medium_velocity - single_velocity), 2.f);
-        });
+    const float quadratic_difference_v = quadratic_difference(velocities);
 
     const float err_velocity =
-        std::sqrt((1.f / ((vsize_f - 1.f) * vsize_f)) * quadratic_difference_v);
+        std::sqrt((1.f / ((velocities.size() - 1) * velocities.size())) *
+                  quadratic_difference_v);
 
     const float medium_distance =
-        (std::accumulate(distances.begin(), distances.end(), 0.f)) / psize_f;
+        (std::accumulate(distances.begin(), distances.end(), 0.f)) /
+        distances.size();
 
-    float quadratic_difference_p = std::accumulate(
-        distances.begin(), distances.end(), 0.f,
-        [&medium_distance](float initial_value, float single_distance) {
-          return initial_value +
-                 std::pow((medium_distance - single_distance), 2.f);
-        });
+    const float quadratic_difference_p = quadratic_difference(distances);
 
     const float err_distance =
-        std::sqrt((1.f / ((psize_f - 1.f) * psize_f)) * quadratic_difference_p);
+        std::sqrt((1.f / ((distances.size() - 1) * distances.size())) *
+                  quadratic_difference_p);
 
     return {medium_velocity, err_velocity, medium_distance, err_distance};
+
   } else {
-    return {0., 0., 0., 0.};
+    return {0.f, 0.f, 0.f, 0.f};
   }
 }
 

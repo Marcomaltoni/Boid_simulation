@@ -8,12 +8,12 @@ TEST_CASE("Testing the separation() method") {
     const pr::Vector2 x_i{1.f, 2.f};
     const pr::Vector2 v_i{1.f, 1.f};
 
-    const pr::Boid B_i{x_i, v_i, 1.f};
+    const pr::Boid B_i{x_i, v_i, 3.f};
 
     const pr::Vector2 x_j{3.f, 4.f};
     const pr::Vector2 v_j{1.f, 1.f};
 
-    const pr::Boid B_j{x_j, v_j, 1.f};
+    const pr::Boid B_j{x_j, v_j, 6.f};
 
     const float s = 1.f;
     const float ds = 5.f;
@@ -28,12 +28,12 @@ TEST_CASE("Testing the separation() method") {
     const pr::Vector2 x_i{3.5f, 8.1f};
     const pr::Vector2 v_i{1.f, 1.f};
 
-    const pr::Boid B_i{x_i, v_i, 1.f};
+    const pr::Boid B_i{x_i, v_i, 20.f};
 
     const pr::Vector2 x_j{6.78f, 4.4f};
     const pr::Vector2 v_j{1.f, 1.f};
 
-    const pr::Boid B_j{x_j, v_j, 1.f};
+    const pr::Boid B_j{x_j, v_j, 20.f};
 
     const float s = 3.f;
     const float ds = 5.f;
@@ -49,12 +49,12 @@ TEST_CASE("Testing the separation() method") {
     const pr::Vector2 x_i{8.3f, 55.82f};
     const pr::Vector2 v_i{1.f, 1.f};
 
-    const pr::Boid B_i{x_i, v_i, 1.f};
+    const pr::Boid B_i{x_i, v_i, 100.f};
 
     const pr::Vector2 x_j{-7.98f, 22.55f};
     const pr::Vector2 v_j{1.f, 1.f};
 
-    const pr::Boid B_j{x_j, v_j, 1.f};
+    const pr::Boid B_j{x_j, v_j, 100.f};
 
     const float s = 7.90f;
     const float ds = 40.f;
@@ -71,17 +71,17 @@ TEST_CASE("testing the allignment() method") {
     const pr::Vector2 x_i{1.f, 1.f};
     const pr::Vector2 v_i{3.f, 5.f};
 
-    const pr::Boid B_i{x_i, v_i, 1.f};
+    const pr::Boid B_i{x_i, v_i, 20.f};
 
     const pr::Vector2 x_j{2.f, 1.f};
     const pr::Vector2 v_j{4.f, 7.f};
 
-    const pr::Boid B_j{x_j, v_j, 1.f};
+    const pr::Boid B_j{x_j, v_j, 20.f};
 
     const float a = 0.5f;
     const float n = 9.f;
 
-    pr::Vector2 v2 = B_i.allignment(B_j, a, n, 100);
+    pr::Vector2 v2 = B_i.allignment(B_j, a, n, 100.f);
 
     CHECK(v2.x_axis() == doctest::Approx(0.0555).epsilon(0.0001));
     CHECK(v2.y_axis() == doctest::Approx(0.1111).epsilon(0.0001));
@@ -91,12 +91,12 @@ TEST_CASE("testing the allignment() method") {
     const pr::Vector2 x_i{1.f, 1.f};
     const pr::Vector2 v_i{-1.f, -9.f};
 
-    const pr::Boid B_i{x_i, v_i, 1.f};
+    const pr::Boid B_i{x_i, v_i, 20.f};
 
     const pr::Vector2 x_j{2.f, 1.f};
     const pr::Vector2 v_j{-12.f, -7.f};
 
-    const pr::Boid B_j{x_j, v_j, 1.f};
+    const pr::Boid B_j{x_j, v_j, 30.f};
 
     const float a = 0.7f;
     const float n = 19.f;
@@ -112,12 +112,12 @@ TEST_CASE("testing the allignment() method") {
     const pr::Vector2 x_i{1.f, 1.f};
     const pr::Vector2 v_i{1.01f, -7.85f};
 
-    const pr::Boid B_i{x_i, v_i, 1.f};
+    const pr::Boid B_i{x_i, v_i, 20.f};
 
     const pr::Vector2 x_j{2.f, 1.f};
     const pr::Vector2 v_j{-8.98f, 15.1f};
 
-    const pr::Boid B_j{x_j, v_j, 1.f};
+    const pr::Boid B_j{x_j, v_j, 30.f};
 
     const float a = 0.2f;
     const float n = 49.f;
@@ -138,7 +138,7 @@ TEST_CASE("testing the cohesion() method") {
     const pr::Vector2 x_i{2.88f, 6.2f};
     const pr::Vector2 v_i{1.f, 1.f};
 
-    const pr::Boid B_i{x_i, v_i, 1.f};
+    const pr::Boid B_i{x_i, v_i, 20.f};
 
     pr::Vector2 v3 = B_i.cohesion(x_cm, c);
 
@@ -154,7 +154,7 @@ TEST_CASE("testing the cohesion() method") {
     const pr::Vector2 x_i{1.f, 1.f};
     const pr::Vector2 v_i{1.f, 1.f};
 
-    const pr::Boid B_i{x_i, v_i, 1.f};
+    const pr::Boid B_i{x_i, v_i, 5.f};
 
     pr::Vector2 v3 = B_i.cohesion(x_cm, c);
 
@@ -170,7 +170,7 @@ TEST_CASE("testing the cohesion() method") {
     const pr::Vector2 x_i{5.87f, -18.2f};
     const pr::Vector2 v_i{1.f, 1.f};
 
-    const pr::Boid B_i{x_i, v_i, 1.f};
+    const pr::Boid B_i{x_i, v_i, 50.f};
 
     pr::Vector2 v3 = B_i.cohesion(x_cm, c);
 
@@ -184,7 +184,7 @@ TEST_CASE("Testing the get_angle() function") {
     const pr::Vector2 v1{1.f, 1.f};
     const pr::Vector2 v2{2.f, 2.f};
 
-    const pr::Boid b1{v1, v2, 1.f};
+    const pr::Boid b1{v1, v2, 5.f};
 
     CHECK(b1.get_angle() == doctest::Approx(135.0).epsilon(0.1));
   }
@@ -193,7 +193,7 @@ TEST_CASE("Testing the get_angle() function") {
     const pr::Vector2 v1{1.f, 1.f};
     const pr::Vector2 v2{-2.f, 2.f};
 
-    const pr::Boid b1{v1, v2, 1.f};
+    const pr::Boid b1{v1, v2, 5.f};
 
     CHECK(b1.get_angle() == doctest::Approx(225.0).epsilon(0.1));
   }
@@ -202,7 +202,7 @@ TEST_CASE("Testing the get_angle() function") {
     const pr::Vector2 v1{1.f, 1.f};
     const pr::Vector2 v2{-2.f, -2.f};
 
-    const pr::Boid b1{v1, v2, 1.f};
+    const pr::Boid b1{v1, v2, 5.f};
 
     CHECK(b1.get_angle() == doctest::Approx(315.0).epsilon(0.1));
   }
@@ -211,7 +211,7 @@ TEST_CASE("Testing the get_angle() function") {
     const pr::Vector2 v1{1.f, 1.f};
     const pr::Vector2 v2{2.f, -2.f};
 
-    const pr::Boid b1{v1, v2, 1.f};
+    const pr::Boid b1{v1, v2, 5.f};
 
     CHECK(b1.get_angle() == doctest::Approx(45.0).epsilon(0.1));
   }
@@ -263,7 +263,7 @@ TEST_CASE("Testing the change_velocity() method") {
     const pr::Vector2 v1{5.5f, 5.5f};
     const pr::Vector2 v2{5.f, 5.f};
 
-    pr::Boid b1{v1, v1, 1.f};
+    pr::Boid b1{v1, v1, 20.f};
 
     b1.change_velocity(v2);
 
@@ -275,7 +275,7 @@ TEST_CASE("Testing the change_velocity() method") {
     const pr::Vector2 v1{5.5f, 5.5f};
     const pr::Vector2 v2{-5.f, -5.f};
 
-    pr::Boid b1{v1, v1, 1.f};
+    pr::Boid b1{v1, v1, 20.f};
 
     b1.change_velocity(v2);
 
@@ -289,7 +289,7 @@ TEST_CASE("Testing the change_position() method") {
     const pr::Vector2 v1{5.5f, 5.5f};
     const pr::Vector2 v2{5.f, 5.f};
 
-    pr::Boid b1{v1, v1, 1.f};
+    pr::Boid b1{v1, v1, 20.f};
 
     b1.change_position(v2);
 
@@ -301,7 +301,7 @@ TEST_CASE("Testing the change_position() method") {
     const pr::Vector2 v1{5.5f, 5.5f};
     const pr::Vector2 v2{-5.f, -5.f};
 
-    pr::Boid b1{v1, v1, 1.f};
+    pr::Boid b1{v1, v1, 20.f};
 
     b1.change_position(v2);
 
@@ -315,8 +315,8 @@ TEST_CASE("Testing the == operator") {
     const pr::Vector2 v1{1.f, 1.f};
     const pr::Vector2 v2{2.f, 2.f};
 
-    const pr::Boid b1{v1, v2, 1.f};
-    const pr::Boid b2{v1, v2, 1.f};
+    const pr::Boid b1{v1, v2, 15.f};
+    const pr::Boid b2{v1, v2, 15.f};
 
     bool same = (b1 == b2);
 
@@ -327,8 +327,8 @@ TEST_CASE("Testing the == operator") {
     const pr::Vector2 v1{1.f, 1.f};
     const pr::Vector2 v2{2.f, 2.f};
 
-    const pr::Boid b1{v1, v2, 1.f};
-    const pr::Boid b2{v2, v1, 1.f};
+    const pr::Boid b1{v1, v2, 5.f};
+    const pr::Boid b2{v2, v1, 5.f};
 
     bool same = (b1 == b2);
 
