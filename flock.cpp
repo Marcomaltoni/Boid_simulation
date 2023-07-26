@@ -34,14 +34,15 @@ Boid Flock::single_boid(int number_of_boid) const {
 void Flock::push_back(const Boid& new_boid) { boids_.push_back(new_boid); }
 
 float Flock::close_boids(const Boid& chosen_boid) const {
-  return count_if(boids_.begin(), boids_.end(),
-                  [this, &chosen_boid](const Boid& other_boid) {
-                    const float distance =
-                        chosen_boid.position().distance(other_boid.position());
+  return count_if(
+      boids_.begin(), boids_.end(),
+      [this, &chosen_boid](const Boid& other_boid) {
+        const float distance =
+            chosen_boid.position().distance(other_boid.position());
 
-                    return distance < this->closeness_parameter_ &&
-                           distance != 0;
-                  });
+        return distance < this->closeness_parameter_ && distance != 0 &&
+               other_boid.get_shape().getFillColor() == sf::Color::Red;
+      });
 }
 
 Vector2 Flock::find_centermass(const Boid& chosen_boid) const {
@@ -61,7 +62,7 @@ Vector2 Flock::find_centermass(const Boid& chosen_boid) const {
     const Vector2 mass_center =
         std::accumulate(near_boids.begin(), near_boids.end(), Vector2{0.f, 0.f},
                         [](const Vector2& a, const Vector2& b) {
-                         Vector2 result = a + b;
+                          Vector2 result = a + b;
 
                           return result;
                         }) *
@@ -211,6 +212,7 @@ std::vector<float> Flock::extract_velocities() const {
   for (const Boid& boid : boids_) {
     velocities.push_back(boid.velocity().lenght_of_vector());
   }
+  assert(velocities.size() == boids_.size());
 
   return velocities;
 }
@@ -228,6 +230,7 @@ std::vector<float> Flock::extract_distances() const {
       distances.push_back(distance);
     }
   }
+  assert(distances.size() >= boids_.size());
 
   return distances;
 }

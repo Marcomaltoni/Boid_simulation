@@ -29,10 +29,15 @@ TEST_CASE("Testing the close_boids() method") {
   const pr::Vector2 v3{70.f, 90.f};
   const pr::Vector2 v4{130.f, 100.f};
 
-  const pr::Boid b1{v1, v1, 500.f};
-  const pr::Boid b2{v2, v2, 500.f};
-  const pr::Boid b3{v3, v3, 500.f};
-  const pr::Boid b4{v4, v4, 500.f};
+  pr::Boid b1{v1, v1, 500.f};
+  pr::Boid b2{v2, v2, 500.f};
+  pr::Boid b3{v3, v3, 500.f};
+  pr::Boid b4{v4, v4, 500.f};
+
+  b1.set_shape().setFillColor(sf::Color::Red);
+  b2.set_shape().setFillColor(sf::Color::Red);
+  b3.set_shape().setFillColor(sf::Color::Red);
+  b4.set_shape().setFillColor(sf::Color::Red);
 
   flock.push_back(b1);
   flock.push_back(b2);
@@ -51,10 +56,15 @@ TEST_CASE("Testing the find_centermass() method") {
     const pr::Vector2 v3{70.f, 90.f};
     const pr::Vector2 v4{140.f, 100.f};
 
-    const pr::Boid b1{v1, v1, 200.f};
-    const pr::Boid b2{v2, v2, 200.f};
-    const pr::Boid b3{v3, v3, 200.f};
-    const pr::Boid b4{v4, v4, 200.f};
+    pr::Boid b1{v1, v1, 200.f};
+    pr::Boid b2{v2, v2, 200.f};
+    pr::Boid b3{v3, v3, 200.f};
+    pr::Boid b4{v4, v4, 200.f};
+
+    b1.set_shape().setFillColor(sf::Color::Red);
+    b2.set_shape().setFillColor(sf::Color::Red);
+    b3.set_shape().setFillColor(sf::Color::Red);
+    b4.set_shape().setFillColor(sf::Color::Red);
 
     flock.push_back(b1);
     flock.push_back(b2);
@@ -78,11 +88,17 @@ TEST_CASE("Testing the find_centermass() method") {
     const pr::Vector2 v4{135.f, 106.f};
     const pr::Vector2 v5{31.f, 52.f};
 
-    const pr::Boid b1{v1, v1, 100.f};
-    const pr::Boid b2{v2, v2, 100.f};
-    const pr::Boid b3{v3, v3, 100.f};
-    const pr::Boid b4{v4, v4, 100.f};
-    const pr::Boid b5{v5, v5, 100.f};
+    pr::Boid b1{v1, v1, 100.f};
+    pr::Boid b2{v2, v2, 100.f};
+    pr::Boid b3{v3, v3, 100.f};
+    pr::Boid b4{v4, v4, 100.f};
+    pr::Boid b5{v5, v5, 100.f};
+
+    b1.set_shape().setFillColor(sf::Color::Red);
+    b2.set_shape().setFillColor(sf::Color::Red);
+    b3.set_shape().setFillColor(sf::Color::Red);
+    b4.set_shape().setFillColor(sf::Color::Red);
+    b5.set_shape().setFillColor(sf::Color::Red);
 
     flock.push_back(b1);
     flock.push_back(b2);
@@ -102,16 +118,20 @@ TEST_CASE("Testing the find_centermass() method") {
     pr::Flock flock{100.f, 30.f, 0.05f, 0.5f, 0.0005f};
 
     const pr::Vector2 v1{55.f, 46.f};
-    const pr::Vector2 v3{76.f, 95.f};
-    const pr::Vector2 v4{135.f, 106.f};
+    const pr::Vector2 v2{76.f, 95.f};
+    const pr::Vector2 v3{135.f, 106.f};
 
-    const pr::Boid b1{v1, v1, 100.f};
-    const pr::Boid b3{v3, v3, 100.f};
-    const pr::Boid b4{v4, v4, 100.f};
+    pr::Boid b1{v1, v1, 100.f};
+    pr::Boid b2{v2, v2, 100.f};
+    pr::Boid b3{v3, v3, 100.f};
+
+    b1.set_shape().setFillColor(sf::Color::Red);
+    b2.set_shape().setFillColor(sf::Color::Red);
+    b3.set_shape().setFillColor(sf::Color::Red);
 
     flock.push_back(b1);
+    flock.push_back(b2);
     flock.push_back(b3);
-    flock.push_back(b4);
 
     pr::Vector2 center_mass = flock.find_centermass(b1);
 
@@ -127,10 +147,15 @@ TEST_CASE("Testing the find_centermass() method") {
     const pr::Vector2 v3{30000.f, 30000.f};
     const pr::Vector2 v4{20000.f, 20000.f};
 
-    const pr::Boid b1{v1, v1, 100000.f};
-    const pr::Boid b2{v2, v2, 100000.f};
-    const pr::Boid b3{v3, v3, 100000.f};
-    const pr::Boid b4{v4, v4, 100000.f};
+    pr::Boid b1{v1, v1, 100000.f};
+    pr::Boid b2{v2, v2, 100000.f};
+    pr::Boid b3{v3, v3, 100000.f};
+    pr::Boid b4{v4, v4, 100000.f};
+
+    b1.set_shape().setFillColor(sf::Color::Red);
+    b2.set_shape().setFillColor(sf::Color::Red);
+    b3.set_shape().setFillColor(sf::Color::Red);
+    b4.set_shape().setFillColor(sf::Color::Red);
 
     flock.push_back(b1);
     flock.push_back(b2);
@@ -188,10 +213,16 @@ TEST_CASE("Testing the evolve() method") {
     const pr::Vector2 v10{50.f, 80.f};
 
     pr::Boid b1{v1, v2, 1.f};
-    const pr::Boid b2{v3, v4, 10000.f};
-    const pr::Boid b3{v5, v6, 10000.f};
-    const pr::Boid b4{v7, v8, 10000.f};
-    const pr::Boid b5{v9, v10, 10000.f};
+    pr::Boid b2{v3, v4, 10000.f};
+    pr::Boid b3{v5, v6, 10000.f};
+    pr::Boid b4{v7, v8, 10000.f};
+    pr::Boid b5{v9, v10, 10000.f};
+
+    b1.set_shape().setFillColor(sf::Color::Red);
+    b2.set_shape().setFillColor(sf::Color::Red);
+    b3.set_shape().setFillColor(sf::Color::Red);
+    b4.set_shape().setFillColor(sf::Color::Red);
+    b5.set_shape().setFillColor(sf::Color::Red);
 
     pr::Flock flock{100.f, 30.f, 0.05f, 0.5f, 0.0005f};
 
@@ -278,12 +309,20 @@ TEST_CASE("Testing the evolve() method") {
     const pr::Vector2 v14{378.f, 389.f};
 
     pr::Boid b1{v1, v2, 1.f};
-    const pr::Boid b2{v3, v4, 1000.f};
-    const pr::Boid b3{v5, v6, 1000.f};
-    const pr::Boid b4{v7, v8, 1000.f};
-    const pr::Boid b5{v9, v10, 1000.f};
-    const pr::Boid b6{v11, v12, 1000.f};
-    const pr::Boid b7{v13, v14, 1000.f};
+    pr::Boid b2{v3, v4, 1000.f};
+    pr::Boid b3{v5, v6, 1000.f};
+    pr::Boid b4{v7, v8, 1000.f};
+    pr::Boid b5{v9, v10, 1000.f};
+    pr::Boid b6{v11, v12, 1000.f};
+    pr::Boid b7{v13, v14, 1000.f};
+
+    b1.set_shape().setFillColor(sf::Color::Red);
+    b2.set_shape().setFillColor(sf::Color::Red);
+    b3.set_shape().setFillColor(sf::Color::Red);
+    b4.set_shape().setFillColor(sf::Color::Red);
+    b5.set_shape().setFillColor(sf::Color::Red);
+    b6.set_shape().setFillColor(sf::Color::Red);
+    b7.set_shape().setFillColor(sf::Color::Red);
 
     pr::Flock flock{100.f, 30.f, 0.05f, 0.5f, 0.0005f};
 
@@ -385,9 +424,14 @@ TEST_CASE("Testing the evolve() method") {
     const pr::Vector2 v8{1.f, 1.f};
 
     pr::Boid b1{v1, v2, 1.f};
-    const pr::Boid b2{v3, v4, 1000.f};
-    const pr::Boid b3{v5, v6, 1000.f};
-    const pr::Boid b4{v7, v8, 1000.f};
+    pr::Boid b2{v3, v4, 1000.f};
+    pr::Boid b3{v5, v6, 1000.f};
+    pr::Boid b4{v7, v8, 1000.f};
+
+    b1.set_shape().setFillColor(sf::Color::Red);
+    b2.set_shape().setFillColor(sf::Color::Red);
+    b3.set_shape().setFillColor(sf::Color::Red);
+    b4.set_shape().setFillColor(sf::Color::Red);
 
     pr::Flock flock{100.f, 30.f, 0.05f, 0.5f, 0.0005f};
 

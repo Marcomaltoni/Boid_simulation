@@ -29,11 +29,11 @@ find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
 if (BUILD_TESTING)
 
   # aggiungi l'eseguibile statistics.t
- add_executable(flock.t  vector2.cpp boid.cpp flock.cpp flock_test.cpp)
+ add_executable(flock.t  vector2.cpp vector2_test.cpp)
 target_link_libraries(flock.t PRIVATE sfml-graphics)
 
   # aggiungi l'eseguibile statistics.t alla lista dei test
-add_test(NAME flock.t COMMAND flock.t)
+  add_test(NAME flock.t COMMAND flock.t)
 
 endif()
 

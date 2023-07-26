@@ -20,10 +20,9 @@ float Boid::maximum_velocity() const { return velocity_max_; }
 
 Vector2 Boid::separation(const Boid& other_boid, float separation_parameter,
                          float distance_of_separation) const {
-  if (position_.distance(other_boid.position()) <
-          distance_of_separation &&
+  if (position_.distance(other_boid.position()) < distance_of_separation &&
       position_.distance(other_boid.position()) != 0.f &&
-      boidshape_.getFillColor() != sf::Color::Black) {
+      boidshape_.getFillColor() == sf::Color::Red) {
     const Vector2 separation_velocity =
         (other_boid.position() - position_) * (-separation_parameter);
 
@@ -39,8 +38,7 @@ Vector2 Boid::separation(const Boid& other_boid, float separation_parameter,
 Vector2 Boid::allignment(const Boid& other_boid, float allignment_parameter,
                          float close_boids, float closeness_parameter) const {
   if (close_boids >= 1.f &&
-      position_.distance(other_boid.position()) <
-          closeness_parameter &&
+      position_.distance(other_boid.position()) < closeness_parameter &&
       position_.distance(other_boid.position()) != 0.f &&
       boidshape_.getFillColor() == other_boid.get_shape().getFillColor() &&
       boidshape_.getFillColor() != sf::Color::Black) {
@@ -81,6 +79,7 @@ float Boid::get_angle() const {
                ((180. / M_PI) *
                 std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis()))));
       assert(angle >= 90.f && angle <= 180.f);
+
       return angle;
     }
 
@@ -94,6 +93,7 @@ float Boid::get_angle() const {
           2 * ((180. / M_PI) *
                std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis())));
       assert(angle >= 180.f && angle <= 270.f);
+
       return angle;
     }
 
@@ -107,6 +107,7 @@ float Boid::get_angle() const {
           2 * ((180. / M_PI) *
                std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis())));
       assert(angle >= 270.f && angle <= 360.f);
+
       return angle;
     }
 
@@ -115,6 +116,7 @@ float Boid::get_angle() const {
           ((180. / M_PI) *
            std::atan(std::abs(velocity_.x_axis() / velocity_.y_axis())));
       assert(angle >= 0.f && angle <= 90.f);
+
       return angle;
     }
 

@@ -8,12 +8,14 @@ TEST_CASE("Testing the separation() method") {
     const pr::Vector2 x_i{1.f, 2.f};
     const pr::Vector2 v_i{1.f, 1.f};
 
-    const pr::Boid B_i{x_i, v_i, 3.f};
+    pr::Boid B_i{x_i, v_i, 3.f};
+    B_i.set_shape().setFillColor(sf::Color::Red);
 
     const pr::Vector2 x_j{3.f, 4.f};
     const pr::Vector2 v_j{1.f, 1.f};
 
-    const pr::Boid B_j{x_j, v_j, 6.f};
+    pr::Boid B_j{x_j, v_j, 6.f};
+    B_j.set_shape().setFillColor(sf::Color::Red);
 
     const float s = 1.f;
     const float ds = 5.f;
@@ -28,12 +30,14 @@ TEST_CASE("Testing the separation() method") {
     const pr::Vector2 x_i{3.5f, 8.1f};
     const pr::Vector2 v_i{1.f, 1.f};
 
-    const pr::Boid B_i{x_i, v_i, 20.f};
+    pr::Boid B_i{x_i, v_i, 20.f};
+    B_i.set_shape().setFillColor(sf::Color::Red);
 
     const pr::Vector2 x_j{6.78f, 4.4f};
     const pr::Vector2 v_j{1.f, 1.f};
 
-    const pr::Boid B_j{x_j, v_j, 20.f};
+    pr::Boid B_j{x_j, v_j, 20.f};
+    B_j.set_shape().setFillColor(sf::Color::Red);
 
     const float s = 3.f;
     const float ds = 5.f;
@@ -49,12 +53,14 @@ TEST_CASE("Testing the separation() method") {
     const pr::Vector2 x_i{8.3f, 55.82f};
     const pr::Vector2 v_i{1.f, 1.f};
 
-    const pr::Boid B_i{x_i, v_i, 100.f};
+    pr::Boid B_i{x_i, v_i, 100.f};
+    B_i.set_shape().setFillColor(sf::Color::Red);
 
     const pr::Vector2 x_j{-7.98f, 22.55f};
     const pr::Vector2 v_j{1.f, 1.f};
 
-    const pr::Boid B_j{x_j, v_j, 100.f};
+    pr::Boid B_j{x_j, v_j, 100.f};
+    B_j.set_shape().setFillColor(sf::Color::Red);
 
     const float s = 7.90f;
     const float ds = 40.f;
@@ -71,12 +77,14 @@ TEST_CASE("testing the allignment() method") {
     const pr::Vector2 x_i{1.f, 1.f};
     const pr::Vector2 v_i{3.f, 5.f};
 
-    const pr::Boid B_i{x_i, v_i, 20.f};
+    pr::Boid B_i{x_i, v_i, 20.f};
+    B_i.set_shape().setFillColor(sf::Color::Red);
 
     const pr::Vector2 x_j{2.f, 1.f};
     const pr::Vector2 v_j{4.f, 7.f};
 
-    const pr::Boid B_j{x_j, v_j, 20.f};
+    pr::Boid B_j{x_j, v_j, 20.f};
+    B_j.set_shape().setFillColor(sf::Color::Red);
 
     const float a = 0.5f;
     const float n = 9.f;
@@ -91,12 +99,14 @@ TEST_CASE("testing the allignment() method") {
     const pr::Vector2 x_i{1.f, 1.f};
     const pr::Vector2 v_i{-1.f, -9.f};
 
-    const pr::Boid B_i{x_i, v_i, 20.f};
+    pr::Boid B_i{x_i, v_i, 20.f};
+    B_i.set_shape().setFillColor(sf::Color::Red);
 
     const pr::Vector2 x_j{2.f, 1.f};
     const pr::Vector2 v_j{-12.f, -7.f};
 
-    const pr::Boid B_j{x_j, v_j, 30.f};
+    pr::Boid B_j{x_j, v_j, 30.f};
+    B_j.set_shape().setFillColor(sf::Color::Red);
 
     const float a = 0.7f;
     const float n = 19.f;
@@ -112,12 +122,14 @@ TEST_CASE("testing the allignment() method") {
     const pr::Vector2 x_i{1.f, 1.f};
     const pr::Vector2 v_i{1.01f, -7.85f};
 
-    const pr::Boid B_i{x_i, v_i, 20.f};
+    pr::Boid B_i{x_i, v_i, 20.f};
+    B_i.set_shape().setFillColor(sf::Color::Red);
 
     const pr::Vector2 x_j{2.f, 1.f};
     const pr::Vector2 v_j{-8.98f, 15.1f};
 
-    const pr::Boid B_j{x_j, v_j, 30.f};
+    pr::Boid B_j{x_j, v_j, 30.f};
+    B_j.set_shape().setFillColor(sf::Color::Red);
 
     const float a = 0.2f;
     const float n = 49.f;
@@ -138,7 +150,8 @@ TEST_CASE("testing the cohesion() method") {
     const pr::Vector2 x_i{2.88f, 6.2f};
     const pr::Vector2 v_i{1.f, 1.f};
 
-    const pr::Boid B_i{x_i, v_i, 20.f};
+    pr::Boid B_i{x_i, v_i, 20.f};
+    B_i.set_shape().setFillColor(sf::Color::Red);
 
     pr::Vector2 v3 = B_i.cohesion(x_cm, c);
 
@@ -154,7 +167,8 @@ TEST_CASE("testing the cohesion() method") {
     const pr::Vector2 x_i{1.f, 1.f};
     const pr::Vector2 v_i{1.f, 1.f};
 
-    const pr::Boid B_i{x_i, v_i, 5.f};
+    pr::Boid B_i{x_i, v_i, 5.f};
+    B_i.set_shape().setFillColor(sf::Color::Red);
 
     pr::Vector2 v3 = B_i.cohesion(x_cm, c);
 
@@ -170,7 +184,8 @@ TEST_CASE("testing the cohesion() method") {
     const pr::Vector2 x_i{5.87f, -18.2f};
     const pr::Vector2 v_i{1.f, 1.f};
 
-    const pr::Boid B_i{x_i, v_i, 50.f};
+    pr::Boid B_i{x_i, v_i, 50.f};
+    B_i.set_shape().setFillColor(sf::Color::Red);
 
     pr::Vector2 v3 = B_i.cohesion(x_cm, c);
 
