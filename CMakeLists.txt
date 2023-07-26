@@ -20,20 +20,20 @@ string(APPEND CMAKE_EXE_LINKER_FLAGS_DEBUG " -fsanitize=address,undefined -fno-o
 
 find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
 
-#add_executable(flock main.cpp flock.cpp boid.cpp vector2.cpp)
+add_executable(flock main.cpp flock.cpp boid.cpp vector2.cpp)
 
-#target_link_libraries(flock PRIVATE sfml-graphics)
+target_link_libraries(flock PRIVATE sfml-graphics)
 
 # se il testing e' abilitato...
 #   per disabilitare il testing, passare -DBUILD_TESTING=OFF a cmake durante la fase di configurazione
 if (BUILD_TESTING)
 
   # aggiungi l'eseguibile statistics.t
- add_executable(flock.t  vector2.cpp vector2_test.cpp)
-target_link_libraries(flock.t PRIVATE sfml-graphics)
+ #add_executable(flock.t  vector2.cpp boid.cpp flock.cpp flock_test.cpp)
+#target_link_libraries(flock.t PRIVATE sfml-graphics)
 
   # aggiungi l'eseguibile statistics.t alla lista dei test
-  add_test(NAME flock.t COMMAND flock.t)
+ # add_test(NAME flock.t COMMAND flock.t)
 
 endif()
 

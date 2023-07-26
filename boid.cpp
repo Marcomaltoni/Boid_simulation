@@ -10,7 +10,9 @@ Boid::Boid() : position_{Vector2{}}, velocity_{Vector2{}}, velocity_max_{0.f} {}
 Boid::Boid(Vector2 position, Vector2 velocity, float maximum_velocity)
     : position_{position},
       velocity_{velocity},
-      velocity_max_{maximum_velocity} {}
+      velocity_max_{maximum_velocity} {
+        assert(velocity_max_ > 0);
+      }
 
 Vector2 Boid::position() const { return position_; }
 
@@ -18,11 +20,15 @@ Vector2 Boid::velocity() const { return velocity_; }
 
 float Boid::maximum_velocity() const { return velocity_max_; }
 
+bool Boid::isRed() const {
+  return boidshape_.getFillColor() == sf::Color::Red;
+}
+
 Vector2 Boid::separation(const Boid& other_boid, float separation_parameter,
                          float distance_of_separation) const {
   if (position_.distance(other_boid.position()) < distance_of_separation &&
       position_.distance(other_boid.position()) != 0.f &&
-      boidshape_.getFillColor() == sf::Color::Red) {
+      isRed() == true) {
     const Vector2 separation_velocity =
         (other_boid.position() - position_) * (-separation_parameter);
 
@@ -41,7 +47,7 @@ Vector2 Boid::allignment(const Boid& other_boid, float allignment_parameter,
       position_.distance(other_boid.position()) < closeness_parameter &&
       position_.distance(other_boid.position()) != 0.f &&
       boidshape_.getFillColor() == other_boid.get_shape().getFillColor() &&
-      boidshape_.getFillColor() != sf::Color::Black) {
+      isRed() == true) {
     const Vector2 allignment_velocity = (other_boid.velocity() - velocity_) *
                                         (allignment_parameter / close_boids);
 

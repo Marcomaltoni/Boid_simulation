@@ -25,6 +25,8 @@ class Boid {
 
   float maximum_velocity() const;
 
+  bool isRed() const;
+
   Vector2 separation(const Boid& other_boid, float separation_parameter,
                      float distance_of_separation) const;
 

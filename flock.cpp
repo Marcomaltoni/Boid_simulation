@@ -41,7 +41,7 @@ float Flock::close_boids(const Boid& chosen_boid) const {
             chosen_boid.position().distance(other_boid.position());
 
         return distance < this->closeness_parameter_ && distance != 0 &&
-               other_boid.get_shape().getFillColor() == sf::Color::Red;
+               other_boid.isRed() == true;
       });
 }
 
@@ -52,7 +52,7 @@ Vector2 Flock::find_centermass(const Boid& chosen_boid) const {
     if (chosen_boid.position().distance(other_boid.position()) <
             closeness_parameter_ &&
         chosen_boid.position().distance(other_boid.position()) != 0.f &&
-        other_boid.get_shape().getFillColor() != sf::Color::Black) {
+        other_boid.isRed() == true) {
       near_boids.push_back(other_boid.position());
     }
     assert(near_boids.size() <= boids_.size());
@@ -107,7 +107,7 @@ Vector2 Flock::find_cohesion(const Boid& chosen_boid) const {
 }
 
 bool Flock::is_predator(const Boid& chosen_boid) const {
-  if (chosen_boid.get_shape().getFillColor() == sf::Color::Red) {
+  if (chosen_boid.isRed() == true) {
     const float predator_distance = 300.f;
 
     return std::any_of(
@@ -116,7 +116,7 @@ bool Flock::is_predator(const Boid& chosen_boid) const {
           const float distance =
               chosen_boid.position().distance(other_boid.position());
 
-          return other_boid.get_shape().getFillColor() == sf::Color::Black &&
+          return other_boid.isRed() == false &&
                  distance < predator_distance && distance != 0;
         });
 
