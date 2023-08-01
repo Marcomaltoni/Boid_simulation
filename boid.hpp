@@ -12,12 +12,15 @@ class Boid {
 
   float velocity_max_;
 
+  float view_angle_;
+
   sf::CircleShape boidshape_;
 
  public:
   Boid();
 
-  Boid(Vector2 position, Vector2 velocity, float maximum_velocity);
+  Boid(Vector2 position, Vector2 velocity, float maximum_velocity,
+       float view_angle);
 
   Vector2 position() const;
 
@@ -25,10 +28,19 @@ class Boid {
 
   float maximum_velocity() const;
 
+  float view_angle() const;
+
+  float get_cos_angle(const Boid& other_boid) const;
+
+  float get_diff_angle(const Boid& other_boid) const;
+
+  bool isNear(const Boid& other_boid, float distance_parameter) const;
+
   bool isRed() const;
 
-  Vector2 separation(const Boid& other_boid, float separation_parameter,
-                     float distance_of_separation) const;
+  Vector2 separation(const Boid& other_boid,
+                               float separation_parameter,
+                               float distance_of_separation) const;
 
   Vector2 allignment(const Boid& other_boid, float allignment_parameter,
                      float close_boids, float closeness_parameter) const;
@@ -36,7 +48,7 @@ class Boid {
   Vector2 cohesion(const Vector2& centre_of_mass,
                    float cohesion_parameter) const;
 
-  float get_angle() const;
+  float get_rotation_angle() const;
 
   void limit_velocity();
 

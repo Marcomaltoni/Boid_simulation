@@ -33,25 +33,31 @@ Boid Flock::single_boid(int number_of_boid) const {
 
 void Flock::push_back(const Boid& new_boid) { boids_.push_back(new_boid); }
 
-float Flock::close_boids(const Boid& chosen_boid) const {
-  return count_if(
-      boids_.begin(), boids_.end(),
-      [this, &chosen_boid](const Boid& other_boid) {
-        const float distance =
-            chosen_boid.position().distance(other_boid.position());
+float Flock::close_boids_angle(const Boid& chosen_boid) const {
+  return count_if(boids_.begin(), boids_.end(),
+                  [this, &chosen_boid](const Boid& other_boid) {
+                    return chosen_boid.isNear(other_boid,
+                                              this->closeness_parameter_) ==
+                               true &&
+                           other_boid.isRed() == true;
+                  });
+}
 
-        return distance < this->closeness_parameter_ && distance != 0 &&
-               other_boid.isRed() == true;
-      });
+float Flock::close_boids_360(const Boid& chosen_boid) const {
+  return count_if(boids_.begin(), boids_.end(),
+                  [this, &chosen_boid](const Boid& other_boid) {
+                    float distance =
+                        chosen_boid.position().distance(other_boid.position());
+                    return distance < this->closeness_parameter_ &&
+                           distance != 0.f;
+                  });
 }
 
 Vector2 Flock::find_centermass(const Boid& chosen_boid) const {
   std::vector<Vector2> near_boids;
 
   for (const Boid& other_boid : boids_) {
-    if (chosen_boid.position().distance(other_boid.position()) <
-            closeness_parameter_ &&
-        chosen_boid.position().distance(other_boid.position()) != 0.f &&
+    if (chosen_boid.isNear(other_boid, closeness_parameter_) == true &&
         other_boid.isRed() == true) {
       near_boids.push_back(other_boid.position());
     }
@@ -66,7 +72,7 @@ Vector2 Flock::find_centermass(const Boid& chosen_boid) const {
 
                           return result;
                         }) *
-        (1.f / close_boids(chosen_boid));
+        (1.f / close_boids_angle(chosen_boid));
 
     return mass_center;
 
@@ -92,7 +98,7 @@ Vector2 Flock::find_allignment(const Boid& chosen_boid) const {
   for (const Boid& other_boid : boids_) {
     null +=
         chosen_boid.allignment(other_boid, allignment_parameter_,
-                               close_boids(chosen_boid), closeness_parameter_);
+                               close_boids_angle(chosen_boid), closeness_parameter_);
   }
 
   return null;
@@ -116,8 +122,8 @@ bool Flock::is_predator(const Boid& chosen_boid) const {
           const float distance =
               chosen_boid.position().distance(other_boid.position());
 
-          return other_boid.isRed() == false &&
-                 distance < predator_distance && distance != 0;
+          return other_boid.isRed() == false && distance < predator_distance &&
+                 distance != 0;
         });
 
   } else {
@@ -188,7 +194,7 @@ void Flock::in_limits(Boid& chosen_boid, unsigned int window_height,
 }
 
 Vector2 Flock::evolve(Boid& chosen_boid, float delta_time) {
-  if (close_boids(chosen_boid) != 0.f) {
+  if (close_boids_360(chosen_boid) != 0.f) {
     chosen_boid.change_velocity(find_cohesion(chosen_boid));
 
     const Vector2 position_offset = chosen_boid.velocity() * delta_time;

@@ -3,18 +3,110 @@
 
 #include "doctest.h"
 
+TEST_CASE("Testing the get_diff_angle() and isNear() methods") {
+  SUBCASE("Boid above the chosen one:") {
+    const pr::Vector2 v1{4.f, 3.f};
+    const pr::Vector2 v2{-2.f, -1.f};
+    const pr::Vector2 v3{5.f, 1.f};
+    const pr::Vector2 v4{-1.f, -1.f};
+
+    const pr::Boid b1{v1, v2, 10.f, 150.f};
+    const pr::Boid b2{v3, v4, 10.f, 150.f};
+
+    float diff_angle = b1.get_diff_angle(b2);
+
+    CHECK(diff_angle == doctest::Approx(90.0).epsilon(0.1));
+    CHECK(b1.isNear(b2, 30.f) == true);
+  }
+
+  SUBCASE("Boid above the chosen one:") {
+    const pr::Vector2 v1{4.f, 4.f};
+    const pr::Vector2 v2{3.f, -1.f};
+    const pr::Vector2 v3{5.f, 1.f};
+    const pr::Vector2 v4{-1.f, -1.f};
+
+    const pr::Boid b1{v1, v2, 10.f, 150.f};
+    const pr::Boid b2{v3, v4, 10.f, 150.f};
+
+    float diff_angle = b1.get_diff_angle(b2);
+
+    CHECK(diff_angle == doctest::Approx(53.130).epsilon(0.001));
+    CHECK(b1.isNear(b2, 30.f) == true);
+  }
+
+  SUBCASE("Boid below the chosen one:") {
+    const pr::Vector2 v1{5.f, 3.f};
+    const pr::Vector2 v2{2.f, 1.f};
+    const pr::Vector2 v3{2.f, 5.f};
+    const pr::Vector2 v4{-1.f, -1.f};
+
+    const pr::Boid b1{v1, v2, 10.f, 100.f};
+    const pr::Boid b2{v3, v4, 10.f, 150.f};
+
+    float diff_angle = b1.get_diff_angle(b2);
+
+    CHECK(diff_angle == doctest::Approx(119.745).epsilon(0.001));
+    CHECK(b1.isNear(b2, 30.f) == false);
+  }
+
+  SUBCASE("Boid below the chosen one:") {
+    const pr::Vector2 v1{3.f, 3.f};
+    const pr::Vector2 v2{-2.f, -1.f};
+    const pr::Vector2 v3{5.f, 5.f};
+    const pr::Vector2 v4{-1.f, -1.f};
+
+    const pr::Boid b1{v1, v2, 10.f, 150.f};
+    const pr::Boid b2{v3, v4, 10.f, 150.f};
+
+    float diff_angle = b1.get_diff_angle(b2);
+
+    CHECK(diff_angle == doctest::Approx(161.565).epsilon(0.001));
+    CHECK(b1.isNear(b2, 30.f) == false);
+  }
+
+  SUBCASE("Boid at the same height of the chosen one:") {
+    const pr::Vector2 v1{3.f, 3.f};
+    const pr::Vector2 v2{-2.f, 0.f};
+    const pr::Vector2 v3{6.f, 3.f};
+    const pr::Vector2 v4{-1.f, -1.f};
+
+    const pr::Boid b1{v1, v2, 10.f, 180.f};
+    const pr::Boid b2{v3, v4, 10.f, 150.f};
+
+    float diff_angle = b1.get_diff_angle(b2);
+
+    CHECK(diff_angle == doctest::Approx(180.0).epsilon(0.1));
+    CHECK(b1.isNear(b2, 30.f) == true);
+  }
+
+  SUBCASE("Boid at the same height of the chosen one:") {
+    const pr::Vector2 v1{4.f, 3.f};
+    const pr::Vector2 v2{-1.f, 0.f};
+    const pr::Vector2 v3{2.f, 3.f};
+    const pr::Vector2 v4{-1.f, -1.f};
+
+    const pr::Boid b1{v1, v2, 10.f, 180.f};
+    const pr::Boid b2{v3, v4, 10.f, 150.f};
+
+    float diff_angle = b1.get_diff_angle(b2);
+
+    CHECK(diff_angle == doctest::Approx(0.0).epsilon(0.1));
+    CHECK(b1.isNear(b2, 30.f) == true);
+  }
+}
+
 TEST_CASE("Testing the separation() method") {
   SUBCASE("Positive separation_parameter and positive components:") {
     const pr::Vector2 x_i{1.f, 2.f};
     const pr::Vector2 v_i{1.f, 1.f};
 
-    pr::Boid B_i{x_i, v_i, 3.f};
+    pr::Boid B_i{x_i, v_i, 3.f, 180.f};
     B_i.set_shape().setFillColor(sf::Color::Red);
 
     const pr::Vector2 x_j{3.f, 4.f};
     const pr::Vector2 v_j{1.f, 1.f};
 
-    pr::Boid B_j{x_j, v_j, 6.f};
+    pr::Boid B_j{x_j, v_j, 6.f, 180.f};
     B_j.set_shape().setFillColor(sf::Color::Red);
 
     const float s = 1.f;
@@ -22,6 +114,8 @@ TEST_CASE("Testing the separation() method") {
 
     pr::Vector2 v1 = B_i.separation(B_j, s, ds);
 
+    CHECK(B_i.get_diff_angle(B_j) == doctest::Approx(0.0).epsilon(0.1));
+    CHECK(B_i.isNear(B_j, 5.f) == true);
     CHECK(v1.x_axis() == doctest::Approx(-2.0).epsilon(0.1));
     CHECK(v1.y_axis() == doctest::Approx(-2.0).epsilon(0.1));
   }
@@ -30,13 +124,13 @@ TEST_CASE("Testing the separation() method") {
     const pr::Vector2 x_i{3.5f, 8.1f};
     const pr::Vector2 v_i{1.f, 1.f};
 
-    pr::Boid B_i{x_i, v_i, 20.f};
+    pr::Boid B_i{x_i, v_i, 20.f, 180.f};
     B_i.set_shape().setFillColor(sf::Color::Red);
 
     const pr::Vector2 x_j{6.78f, 4.4f};
     const pr::Vector2 v_j{1.f, 1.f};
 
-    pr::Boid B_j{x_j, v_j, 20.f};
+    pr::Boid B_j{x_j, v_j, 20.f, 180.f};
     B_j.set_shape().setFillColor(sf::Color::Red);
 
     const float s = 3.f;
@@ -53,13 +147,13 @@ TEST_CASE("Testing the separation() method") {
     const pr::Vector2 x_i{8.3f, 55.82f};
     const pr::Vector2 v_i{1.f, 1.f};
 
-    pr::Boid B_i{x_i, v_i, 100.f};
+    pr::Boid B_i{x_i, v_i, 100.f, 180.f};
     B_i.set_shape().setFillColor(sf::Color::Red);
 
     const pr::Vector2 x_j{-7.98f, 22.55f};
     const pr::Vector2 v_j{1.f, 1.f};
 
-    pr::Boid B_j{x_j, v_j, 100.f};
+    pr::Boid B_j{x_j, v_j, 100.f, 180.f};
     B_j.set_shape().setFillColor(sf::Color::Red);
 
     const float s = 7.90f;
@@ -77,13 +171,13 @@ TEST_CASE("testing the allignment() method") {
     const pr::Vector2 x_i{1.f, 1.f};
     const pr::Vector2 v_i{3.f, 5.f};
 
-    pr::Boid B_i{x_i, v_i, 20.f};
+    pr::Boid B_i{x_i, v_i, 20.f, 180.f};
     B_i.set_shape().setFillColor(sf::Color::Red);
 
     const pr::Vector2 x_j{2.f, 1.f};
     const pr::Vector2 v_j{4.f, 7.f};
 
-    pr::Boid B_j{x_j, v_j, 20.f};
+    pr::Boid B_j{x_j, v_j, 20.f, 180.f};
     B_j.set_shape().setFillColor(sf::Color::Red);
 
     const float a = 0.5f;
@@ -99,13 +193,13 @@ TEST_CASE("testing the allignment() method") {
     const pr::Vector2 x_i{1.f, 1.f};
     const pr::Vector2 v_i{-1.f, -9.f};
 
-    pr::Boid B_i{x_i, v_i, 20.f};
+    pr::Boid B_i{x_i, v_i, 20.f, 180.f};
     B_i.set_shape().setFillColor(sf::Color::Red);
 
     const pr::Vector2 x_j{2.f, 1.f};
     const pr::Vector2 v_j{-12.f, -7.f};
 
-    pr::Boid B_j{x_j, v_j, 30.f};
+    pr::Boid B_j{x_j, v_j, 30.f, 180.f};
     B_j.set_shape().setFillColor(sf::Color::Red);
 
     const float a = 0.7f;
@@ -122,13 +216,13 @@ TEST_CASE("testing the allignment() method") {
     const pr::Vector2 x_i{1.f, 1.f};
     const pr::Vector2 v_i{1.01f, -7.85f};
 
-    pr::Boid B_i{x_i, v_i, 20.f};
+    pr::Boid B_i{x_i, v_i, 20.f, 180.f};
     B_i.set_shape().setFillColor(sf::Color::Red);
 
     const pr::Vector2 x_j{2.f, 1.f};
     const pr::Vector2 v_j{-8.98f, 15.1f};
 
-    pr::Boid B_j{x_j, v_j, 30.f};
+    pr::Boid B_j{x_j, v_j, 30.f, 180.f};
     B_j.set_shape().setFillColor(sf::Color::Red);
 
     const float a = 0.2f;
@@ -150,7 +244,7 @@ TEST_CASE("testing the cohesion() method") {
     const pr::Vector2 x_i{2.88f, 6.2f};
     const pr::Vector2 v_i{1.f, 1.f};
 
-    pr::Boid B_i{x_i, v_i, 20.f};
+    pr::Boid B_i{x_i, v_i, 20.f, 180.f};
     B_i.set_shape().setFillColor(sf::Color::Red);
 
     pr::Vector2 v3 = B_i.cohesion(x_cm, c);
@@ -167,7 +261,7 @@ TEST_CASE("testing the cohesion() method") {
     const pr::Vector2 x_i{1.f, 1.f};
     const pr::Vector2 v_i{1.f, 1.f};
 
-    pr::Boid B_i{x_i, v_i, 5.f};
+    pr::Boid B_i{x_i, v_i, 5.f, 180.f};
     B_i.set_shape().setFillColor(sf::Color::Red);
 
     pr::Vector2 v3 = B_i.cohesion(x_cm, c);
@@ -184,7 +278,7 @@ TEST_CASE("testing the cohesion() method") {
     const pr::Vector2 x_i{5.87f, -18.2f};
     const pr::Vector2 v_i{1.f, 1.f};
 
-    pr::Boid B_i{x_i, v_i, 50.f};
+    pr::Boid B_i{x_i, v_i, 50.f, 180.f};
     B_i.set_shape().setFillColor(sf::Color::Red);
 
     pr::Vector2 v3 = B_i.cohesion(x_cm, c);
@@ -194,41 +288,41 @@ TEST_CASE("testing the cohesion() method") {
   }
 }
 
-TEST_CASE("Testing the get_angle() function") {
+TEST_CASE("Testing the get_rotation_angle() function") {
   SUBCASE("Positive components of velocity:") {
     const pr::Vector2 v1{1.f, 1.f};
     const pr::Vector2 v2{2.f, 2.f};
 
-    const pr::Boid b1{v1, v2, 5.f};
+    const pr::Boid b1{v1, v2, 5.f, 180.f};
 
-    CHECK(b1.get_angle() == doctest::Approx(135.0).epsilon(0.1));
+    CHECK(b1.get_rotation_angle() == doctest::Approx(135.0).epsilon(0.1));
   }
 
   SUBCASE("Negative and positive components of velocity:") {
     const pr::Vector2 v1{1.f, 1.f};
     const pr::Vector2 v2{-2.f, 2.f};
 
-    const pr::Boid b1{v1, v2, 5.f};
+    const pr::Boid b1{v1, v2, 5.f, 180.f};
 
-    CHECK(b1.get_angle() == doctest::Approx(225.0).epsilon(0.1));
+    CHECK(b1.get_rotation_angle() == doctest::Approx(225.0).epsilon(0.1));
   }
 
   SUBCASE("Negative components of velocity:") {
     const pr::Vector2 v1{1.f, 1.f};
     const pr::Vector2 v2{-2.f, -2.f};
 
-    const pr::Boid b1{v1, v2, 5.f};
+    const pr::Boid b1{v1, v2, 5.f, 180.f};
 
-    CHECK(b1.get_angle() == doctest::Approx(315.0).epsilon(0.1));
+    CHECK(b1.get_rotation_angle() == doctest::Approx(315.0).epsilon(0.1));
   }
 
   SUBCASE("Positive and negative components of velocity:") {
     const pr::Vector2 v1{1.f, 1.f};
     const pr::Vector2 v2{2.f, -2.f};
 
-    const pr::Boid b1{v1, v2, 5.f};
+    const pr::Boid b1{v1, v2, 5.f, 180.f};
 
-    CHECK(b1.get_angle() == doctest::Approx(45.0).epsilon(0.1));
+    CHECK(b1.get_rotation_angle() == doctest::Approx(45.0).epsilon(0.1));
   }
 }
 
@@ -241,13 +335,13 @@ TEST_CASE("Testing the limit_velocity() method") {
   pr::Vector2 v6{-3.f, 4.f};
   pr::Vector2 v7{3.f, 4.f};
 
-  pr::Boid b1{v1, v1, 500.f};
-  pr::Boid b2{v2, v2, 500.f};
-  pr::Boid b3{v3, v3, 500.f};
-  pr::Boid b4{v4, v4, 500.f};
-  pr::Boid b5{v5, v5, 4.f};
-  pr::Boid b6{v6, v6, 4.f};
-  pr::Boid b7{v7, v7, 6.f};
+  pr::Boid b1{v1, v1, 500.f, 180.f};
+  pr::Boid b2{v2, v2, 500.f, 180.f};
+  pr::Boid b3{v3, v3, 500.f, 180.f};
+  pr::Boid b4{v4, v4, 500.f, 180.f};
+  pr::Boid b5{v5, v5, 4.f, 180.f};
+  pr::Boid b6{v6, v6, 4.f, 180.f};
+  pr::Boid b7{v7, v7, 6.f, 180.f};
 
   b1.limit_velocity();
   b2.limit_velocity();
@@ -278,7 +372,7 @@ TEST_CASE("Testing the change_velocity() method") {
     const pr::Vector2 v1{5.5f, 5.5f};
     const pr::Vector2 v2{5.f, 5.f};
 
-    pr::Boid b1{v1, v1, 20.f};
+    pr::Boid b1{v1, v1, 20.f, 180.f};
 
     b1.change_velocity(v2);
 
@@ -290,7 +384,7 @@ TEST_CASE("Testing the change_velocity() method") {
     const pr::Vector2 v1{5.5f, 5.5f};
     const pr::Vector2 v2{-5.f, -5.f};
 
-    pr::Boid b1{v1, v1, 20.f};
+    pr::Boid b1{v1, v1, 20.f, 180.f};
 
     b1.change_velocity(v2);
 
@@ -304,7 +398,7 @@ TEST_CASE("Testing the change_position() method") {
     const pr::Vector2 v1{5.5f, 5.5f};
     const pr::Vector2 v2{5.f, 5.f};
 
-    pr::Boid b1{v1, v1, 20.f};
+    pr::Boid b1{v1, v1, 20.f, 180.f};
 
     b1.change_position(v2);
 
@@ -316,7 +410,7 @@ TEST_CASE("Testing the change_position() method") {
     const pr::Vector2 v1{5.5f, 5.5f};
     const pr::Vector2 v2{-5.f, -5.f};
 
-    pr::Boid b1{v1, v1, 20.f};
+    pr::Boid b1{v1, v1, 20.f, 180.f};
 
     b1.change_position(v2);
 
@@ -330,8 +424,8 @@ TEST_CASE("Testing the == operator") {
     const pr::Vector2 v1{1.f, 1.f};
     const pr::Vector2 v2{2.f, 2.f};
 
-    const pr::Boid b1{v1, v2, 15.f};
-    const pr::Boid b2{v1, v2, 15.f};
+    const pr::Boid b1{v1, v2, 15.f, 180.f};
+    const pr::Boid b2{v1, v2, 15.f, 180.f};
 
     bool same = (b1 == b2);
 
@@ -342,8 +436,8 @@ TEST_CASE("Testing the == operator") {
     const pr::Vector2 v1{1.f, 1.f};
     const pr::Vector2 v2{2.f, 2.f};
 
-    const pr::Boid b1{v1, v2, 5.f};
-    const pr::Boid b2{v2, v1, 5.f};
+    const pr::Boid b1{v1, v2, 5.f, 180.f};
+    const pr::Boid b2{v2, v1, 5.f, 180.f};
 
     bool same = (b1 == b2);
 

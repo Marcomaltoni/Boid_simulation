@@ -147,6 +147,35 @@ TEST_CASE("Testing operator==") {
   }
 }
 
+TEST_CASE("Testing the dot_product() method"){
+  SUBCASE("Positive and negative components:"){
+    const pr::Vector2 v1{-2.f, -1.f};
+    const pr::Vector2 v2{1.f, -2.f};
+
+    float result = v1.dot_product(v2);
+
+    CHECK(result == doctest::Approx(0.0).epsilon(0.1));
+  }
+
+  SUBCASE("Positive and negative components:"){
+    const pr::Vector2 v1{-3.f, 2.f};
+    const pr::Vector2 v2{2.f, 1.f};
+
+    float result = v1.dot_product(v2);
+
+    CHECK(result == doctest::Approx(-4.0).epsilon(0.1));
+  }
+
+  SUBCASE("Positive and null components:"){
+    const pr::Vector2 v1{3.f, 0.f};
+    const pr::Vector2 v2{-2.f, 0.f};
+
+    float result = v1.dot_product(v2);
+
+    CHECK(result == doctest::Approx(-6.0).epsilon(0.1));
+  }
+}
+
 TEST_CASE("Testing operator*") {
   SUBCASE("Positive components:") {
     const pr::Vector2 v1{1.f, 3.f};

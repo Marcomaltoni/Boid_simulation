@@ -7,13 +7,15 @@
 
 int main() {
   std::cout << "Insert the following parameters: \n"
-            << " 1- Parameter which determines when two boids are 'near', values permitted are between [50; 200]: \n";
+            << " 1- Parameter which determines when two boids are 'near', "
+               "values permitted are between [50; 200]: \n";
   float closeness_parameter;
   std::cin >> closeness_parameter;
 
   std::cout
       << " 2- Parameter which represents the distance at which starts to act "
-         "the separation rule among boids, values permitted are between [25; 40]: \n";
+         "the separation rule among boids, values permitted are between [25; "
+         "40]: \n";
   float distance_of_separation;
   std::cin >> distance_of_separation;
 
@@ -67,9 +69,12 @@ int main() {
   sprite.setPosition(0.f, 0.f);
 
   std::default_random_engine rand_engine;
-  std::normal_distribution<float> normal_dist;
+  std::normal_distribution<float> velocity_distribution;
+  std::uniform_int_distribution<> angle_distribution(120, 180);
 
-  pr::Flock flock{closeness_parameter, distance_of_separation, separation_parameter, allignment_parameter, cohesion_parameter};
+  pr::Flock flock{closeness_parameter, distance_of_separation,
+                  separation_parameter, allignment_parameter,
+                  cohesion_parameter};
 
   while (window.isOpen()) {
     while (window.pollEvent(event)) {
@@ -87,9 +92,13 @@ int main() {
               const float positionf_y = static_cast<float>(position.y);
               const pr::Vector2 position_f{positionf_x, positionf_y};
 
-              const pr::Vector2 speed{normal_dist(rand_engine), normal_dist(rand_engine)};
+              const pr::Vector2 speed{velocity_distribution(rand_engine),
+                                      velocity_distribution(rand_engine)};
 
-              pr::Boid boid{position_f, speed, 0.5f};
+              float view_angle =
+                  static_cast<float>(angle_distribution(rand_engine));
+
+              pr::Boid boid{position_f, speed, 0.5f, view_angle};
               boid.setPosition(position_f);
               boid.setRotation();
               boid.setPointCount();
@@ -109,16 +118,20 @@ int main() {
               const float positionf_y = static_cast<float>(position.y);
               const pr::Vector2 position_f{positionf_x, positionf_y};
 
-              const pr::Vector2 speed{normal_dist(rand_engine), normal_dist(rand_engine)};
+              const pr::Vector2 speed{velocity_distribution(rand_engine),
+                                      velocity_distribution(rand_engine)};
 
-              pr::Boid boid{position_f, speed, 0.5f};
+              float view_angle =
+                  static_cast<float>(angle_distribution(rand_engine));
+
+              pr::Boid boid{position_f, speed, 0.5f, view_angle};
               boid.setPosition(position_f);
               boid.setRotation();
               boid.setPointCount();
               boid.setRadius(15.f);
               boid.setScale(1.f, 1.5f);
               boid.setFillColor(sf::Color::Black);
-              boid.setOrigin(12.99038106f, 10.0f);
+              boid.setOrigin(12.9903811f, 10.0f);
 
               flock.push_back(boid);
 

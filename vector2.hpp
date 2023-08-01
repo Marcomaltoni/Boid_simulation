@@ -16,19 +16,21 @@ class Vector2 {
 
   float y_axis() const;
 
-  Vector2 operator+=(const Vector2 &other_vector);
+  Vector2 operator+=(const Vector2& other_vector);
 
-  Vector2 operator+(const Vector2 &other_vector) const;
+  Vector2 operator+(const Vector2& other_vector) const;
 
-  Vector2 operator-(const Vector2 &other_vector) const;
+  Vector2 operator-(const Vector2& other_vector) const;
 
-  float distance(const Vector2 &other_vector) const;
+  float distance(const Vector2& other_vector) const;
 
   float lenght_of_vector() const;
 
-  bool operator!=(const Vector2 &other_vector) const;
+  bool operator!=(const Vector2& other_vector) const;
 
-  bool operator==(const Vector2 &other_vector) const;
+  bool operator==(const Vector2& other_vector) const;
+
+  float dot_product(const Vector2& other_vector) const;
 
   Vector2 operator*(float scalar) const;
 };

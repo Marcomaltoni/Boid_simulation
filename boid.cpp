@@ -5,14 +5,20 @@
 #include <cmath>
 
 namespace pr {
-Boid::Boid() : position_{Vector2{}}, velocity_{Vector2{}}, velocity_max_{0.f} {}
+Boid::Boid()
+    : position_{Vector2{}},
+      velocity_{Vector2{}},
+      velocity_max_{0.f},
+      view_angle_{0.f} {}
 
-Boid::Boid(Vector2 position, Vector2 velocity, float maximum_velocity)
+Boid::Boid(Vector2 position, Vector2 velocity, float maximum_velocity,
+           float view_angle)
     : position_{position},
       velocity_{velocity},
-      velocity_max_{maximum_velocity} {
-        assert(velocity_max_ > 0);
-      }
+      velocity_max_{maximum_velocity},
+      view_angle_{view_angle} {
+  assert(velocity_max_ > 0 && view_angle_ >= 0.f && view_angle_ <= 180.f);
+}
 
 Vector2 Boid::position() const { return position_; }
 
@@ -20,12 +26,47 @@ Vector2 Boid::velocity() const { return velocity_; }
 
 float Boid::maximum_velocity() const { return velocity_max_; }
 
-bool Boid::isRed() const {
+float Boid::view_angle() const { return view_angle_; }
+
+float Boid::get_cos_angle(const Boid& other_boid) const {
+  const Vector2 difference = other_boid.position_ - position_;
+  const float dot_product = velocity_.dot_product(difference);
+
+  const float cos_angle = dot_product / (velocity_.lenght_of_vector() *
+                                         difference.lenght_of_vector());
+
+  return cos_angle;
+}
+
+float Boid::get_diff_angle(const Boid& other_boid) const {
+  const float cos_angle = get_cos_angle(other_boid);
+
+  if (cos_angle < -1.f) {
+    return 180.f;
+  }
+  if (cos_angle > 1.f) {
+    return 0.f;
+  } else {
+    const float radiant_angle = std::acos(cos_angle);
+    const float degree_angle = (radiant_angle * 180.f) / M_PI;
+
+    return degree_angle;
+  }
+}
+
+bool Boid::isNear(const Boid& other_boid, float distance_parameter) const {
+  float distance = position_.distance(other_boid.position());
+
+  return distance != 0.f && distance < distance_parameter &&
+         get_diff_angle(other_boid) <= view_angle_;
+}
+
+bool Boid::isRed() const{
   return boidshape_.getFillColor() == sf::Color::Red;
 }
 
 Vector2 Boid::separation(const Boid& other_boid, float separation_parameter,
-                         float distance_of_separation) const {
+                                   float distance_of_separation) const {
   if (position_.distance(other_boid.position()) < distance_of_separation &&
       position_.distance(other_boid.position()) != 0.f &&
       isRed() == true) {
@@ -44,8 +85,7 @@ Vector2 Boid::separation(const Boid& other_boid, float separation_parameter,
 Vector2 Boid::allignment(const Boid& other_boid, float allignment_parameter,
                          float close_boids, float closeness_parameter) const {
   if (close_boids >= 1.f &&
-      position_.distance(other_boid.position()) < closeness_parameter &&
-      position_.distance(other_boid.position()) != 0.f &&
+      isNear(other_boid, closeness_parameter) == true &&
       boidshape_.getFillColor() == other_boid.get_shape().getFillColor() &&
       isRed() == true) {
     const Vector2 allignment_velocity = (other_boid.velocity() - velocity_) *
@@ -75,7 +115,7 @@ Vector2 Boid::cohesion(const Vector2& center_of_mass,
   }
 }
 
-float Boid::get_angle() const {
+float Boid::get_rotation_angle() const {
   if (velocity_.y_axis() != 0.f) {
     if (velocity_.x_axis() >= 0.f && velocity_.y_axis() > 0.f) {
       const float angle =
@@ -160,7 +200,8 @@ void Boid::change_position(const Vector2& position_offset) {
 bool Boid::operator==(const Boid& other_boid) const {
   return (position_ == other_boid.position_ &&
           velocity_ == other_boid.velocity_ &&
-          velocity_max_ == other_boid.velocity_max_);
+          velocity_max_ == other_boid.velocity_max_ &&
+          view_angle_ == other_boid.view_angle());
 };
 
 sf::CircleShape& Boid::set_shape() { return boidshape_; }
@@ -189,6 +230,6 @@ void Boid::setPosition(const Vector2& new_position) {
   boidshape_.setPosition(graphic_position);
 };
 
-void Boid::setRotation() { boidshape_.setRotation(get_angle()); }
+void Boid::setRotation() { boidshape_.setRotation(get_rotation_angle()); }
 
 }  // namespace pr
