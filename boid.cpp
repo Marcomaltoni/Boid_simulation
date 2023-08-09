@@ -49,6 +49,7 @@ float Boid::get_diff_angle(const Boid& other_boid) const {
   } else {
     const float radiant_angle = std::acos(cos_angle);
     const float degree_angle = (radiant_angle * 180.f) / M_PI;
+    assert(degree_angle <= 360.f && degree_angle >= 0.f);
 
     return degree_angle;
   }
@@ -61,15 +62,12 @@ bool Boid::isNear(const Boid& other_boid, float distance_parameter) const {
          get_diff_angle(other_boid) <= view_angle_;
 }
 
-bool Boid::isRed() const{
-  return boidshape_.getFillColor() == sf::Color::Red;
-}
+bool Boid::isRed() const { return boidshape_.getFillColor() == sf::Color::Red; }
 
 Vector2 Boid::separation(const Boid& other_boid, float separation_parameter,
-                                   float distance_of_separation) const {
+                         float distance_of_separation) const {
   if (position_.distance(other_boid.position()) < distance_of_separation &&
-      position_.distance(other_boid.position()) != 0.f &&
-      isRed() == true) {
+      position_.distance(other_boid.position()) != 0.f && isRed() == true) {
     const Vector2 separation_velocity =
         (other_boid.position() - position_) * (-separation_parameter);
 
@@ -84,8 +82,7 @@ Vector2 Boid::separation(const Boid& other_boid, float separation_parameter,
 
 Vector2 Boid::allignment(const Boid& other_boid, float allignment_parameter,
                          float close_boids, float closeness_parameter) const {
-  if (close_boids >= 1.f &&
-      isNear(other_boid, closeness_parameter) == true &&
+  if (close_boids >= 1.f && isNear(other_boid, closeness_parameter) == true &&
       boidshape_.getFillColor() == other_boid.get_shape().getFillColor() &&
       isRed() == true) {
     const Vector2 allignment_velocity = (other_boid.velocity() - velocity_) *
