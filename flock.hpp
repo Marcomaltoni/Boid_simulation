@@ -16,19 +16,7 @@ struct Simulation_state {
   float err_distance;
 };
 
-inline float quadratic_difference(const std::vector<float>& generic_vector) {
-  const float medium_value =
-      (std::accumulate(generic_vector.begin(), generic_vector.end(), 0.f)) /
-      static_cast<float>(generic_vector.size());
-
-  float quadratic_difference = std::accumulate(
-      generic_vector.begin(), generic_vector.end(), 0.f,
-      [&medium_value](float initial_value, float single_value) {
-        return initial_value + std::pow((medium_value - single_value), 2.f);
-      });
-
-  return quadratic_difference;
-};
+float quadratic_difference(const std::vector<float>& generic_vector);
 
 class Flock {
   const float closeness_parameter_;

@@ -29,7 +29,7 @@ target_link_libraries(flock PRIVATE sfml-graphics)
 if (BUILD_TESTING)
 
   # aggiungi l'eseguibile statistics.t
- #add_executable(flock.t  vector2.cpp boid.cpp flock.cpp flock_test.cpp)
+#add_executable(flock.t  vector2.cpp boid.cpp flock.cpp flock_test.cpp)
 #target_link_libraries(flock.t PRIVATE sfml-graphics)
 
   # aggiungi l'eseguibile statistics.t alla lista dei test

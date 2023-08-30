@@ -46,6 +46,7 @@ float Boid::get_diff_angle(const Boid& other_boid) const {
   }
   if (cos_angle > 1.f) {
     return 0.f;
+
   } else {
     const float radiant_angle = std::acos(cos_angle);
     const float degree_angle = (radiant_angle * 180.f) / M_PI;

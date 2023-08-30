@@ -68,7 +68,8 @@ int main() {
   sprite.setScale(background_scaleX, background_scaleY);
   sprite.setPosition(0.f, 0.f);
 
-  std::default_random_engine rand_engine;
+  std::random_device r;
+  std::default_random_engine rand_engine(r());
   std::normal_distribution<float> velocity_distribution;
   std::uniform_int_distribution<> angle_distribution(120, 180);
 

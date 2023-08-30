@@ -8,6 +8,20 @@
 
 namespace pr {
 
+float quadratic_difference(const std::vector<float>& generic_vector) {
+  const float medium_value =
+      (std::accumulate(generic_vector.begin(), generic_vector.end(), 0.f)) /
+      static_cast<float>(generic_vector.size());
+
+  float quadratic_difference = std::accumulate(
+      generic_vector.begin(), generic_vector.end(), 0.f,
+      [&medium_value](float initial_value, float single_value) {
+        return initial_value + std::pow((medium_value - single_value), 2.f);
+      });
+
+  return quadratic_difference;
+};
+
 Flock::Flock(const float distance, const float ds_parameter,
              const float s_parameter, const float a_parameter,
              const float c_parameter)
@@ -44,13 +58,12 @@ float Flock::close_boids_angle(const Boid& chosen_boid) const {
 }
 
 float Flock::close_boids_360(const Boid& chosen_boid) const {
-  return count_if(boids_.begin(), boids_.end(),
-                  [this, &chosen_boid](const Boid& other_boid) {
-                    float distance =
-                        chosen_boid.position().distance(other_boid.position());
-                    return distance < this->closeness_parameter_ &&
-                           distance != 0.f;
-                  });
+  return count_if(
+      boids_.begin(), boids_.end(),
+      [this, &chosen_boid](const Boid& other_boid) {
+        float distance = chosen_boid.position().distance(other_boid.position());
+        return distance < this->closeness_parameter_ && distance != 0.f;
+      });
 }
 
 Vector2 Flock::find_centermass(const Boid& chosen_boid) const {
@@ -96,9 +109,9 @@ Vector2 Flock::find_allignment(const Boid& chosen_boid) const {
   Vector2 null{};
 
   for (const Boid& other_boid : boids_) {
-    null +=
-        chosen_boid.allignment(other_boid, allignment_parameter_,
-                               close_boids_angle(chosen_boid), closeness_parameter_);
+    null += chosen_boid.allignment(other_boid, allignment_parameter_,
+                                   close_boids_angle(chosen_boid),
+                                   closeness_parameter_);
   }
 
   return null;

@@ -38,9 +38,8 @@ class Boid {
 
   bool isRed() const;
 
-  Vector2 separation(const Boid& other_boid,
-                               float separation_parameter,
-                               float distance_of_separation) const;
+  Vector2 separation(const Boid& other_boid, float separation_parameter,
+                     float distance_of_separation) const;
 
   Vector2 allignment(const Boid& other_boid, float allignment_parameter,
                      float close_boids, float closeness_parameter) const;
