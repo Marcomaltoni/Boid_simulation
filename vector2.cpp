@@ -58,7 +58,7 @@ bool Vector2::operator==(const Vector2& other_vector) const {
 }
 
 float Vector2::dot_product(const Vector2& other_vector) const {
-  float result = x_ * other_vector.x_ + y_ * other_vector.y_;
+  const float result = x_ * other_vector.x_ + y_ * other_vector.y_;
 
   return result;
 }

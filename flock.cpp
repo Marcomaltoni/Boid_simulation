@@ -1,8 +1,7 @@
 #include "flock.hpp"
 
-#include <assert.h>
-
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <numeric>
 
@@ -81,7 +80,7 @@ Vector2 Flock::find_centermass(const Boid& chosen_boid) const {
     const Vector2 mass_center =
         std::accumulate(near_boids.begin(), near_boids.end(), Vector2{0.f, 0.f},
                         [](const Vector2& a, const Vector2& b) {
-                          Vector2 result = a + b;
+                          const Vector2 result = a + b;
 
                           return result;
                         }) *

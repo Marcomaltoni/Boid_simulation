@@ -419,7 +419,7 @@ TEST_CASE("Testing the change_position() method") {
   }
 }
 
-TEST_CASE("Testing the == operator") {
+TEST_CASE("Testing the operator==") {
   SUBCASE("Same boid:") {
     const pr::Vector2 v1{1.f, 1.f};
     const pr::Vector2 v2{2.f, 2.f};
@@ -432,7 +432,7 @@ TEST_CASE("Testing the == operator") {
     CHECK(same == true);
   }
 
-  SUBCASE("Different boid:") {
+  SUBCASE("Different boids:") {
     const pr::Vector2 v1{1.f, 1.f};
     const pr::Vector2 v2{2.f, 2.f};
 

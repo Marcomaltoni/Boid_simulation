@@ -199,7 +199,7 @@ bool Boid::operator==(const Boid& other_boid) const {
   return (position_ == other_boid.position_ &&
           velocity_ == other_boid.velocity_ &&
           velocity_max_ == other_boid.velocity_max_ &&
-          view_angle_ == other_boid.view_angle());
+          view_angle_ == other_boid.view_angle_);
 };
 
 sf::CircleShape& Boid::set_shape() { return boidshape_; }

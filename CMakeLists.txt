@@ -33,7 +33,7 @@ if (BUILD_TESTING)
 #target_link_libraries(flock.t PRIVATE sfml-graphics)
 
   # aggiungi l'eseguibile statistics.t alla lista dei test
- # add_test(NAME flock.t COMMAND flock.t)
+# add_test(NAME flock.t COMMAND flock.t)
 
 endif()
 

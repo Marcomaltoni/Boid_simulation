@@ -1,8 +1,6 @@
 #ifndef FLOCK_HPP
 #define FLOCK_HPP
-#include <array>
-#include <cmath>
-#include <numeric>
+
 #include <vector>
 
 #include "boid.hpp"
